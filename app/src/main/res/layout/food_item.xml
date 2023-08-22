@@ -18,11 +18,12 @@
 
     <ImageView
         android:id="@+id/foodImage"
-        android:layout_width="58dp"
+        android:layout_width="63dp"
         android:layout_height="63dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:background="@color/PrimaryAccent"
+        android:background="@color/white"
+        android:scaleType="fitCenter"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@drawable/baseline_emoji_food_beverage_24" />

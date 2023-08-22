@@ -82,17 +82,9 @@ public class MainActivity extends AppCompatActivity implements FoodMenuAdapter.O
 
     }
 
-
-
-    public void openSettings(android.view.View view){
-        Intent intent = new Intent(this, SettingsActivity.class);
-        Log.d("MainActivity", "openSettings: ");
-        startActivity(intent);
-    }
-
     @Override
     public void OnFoodItemClick(FoodItem foodItem) {
-        OrderItem orderItem = new OrderItem(foodItem.name, R.drawable.baseline_emoji_food_beverage_24, foodItem.price, 1);
+        OrderItem orderItem = new OrderItem(foodItem.name, R.drawable._fried_rice, foodItem.price, 1);
         orderedItems.add(orderItem);
         orderedListAdapter.notifyDataSetChanged();
         Log.d("heyyou", "OnFoodItemClick:");

@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.example.virtualwaiter"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.example.virtualwaiter"
@@ -40,6 +40,7 @@ dependencies {
     implementation("androidx.navigation:navigation-ui:2.7.0")
     implementation("com.google.firebase:firebase-firestore:24.7.0")
     implementation("androidx.annotation:annotation:1.6.0")
+    implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.0"))
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1")
     testImplementation("junit:junit:4.13.2")

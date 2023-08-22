@@ -8,6 +8,9 @@ import java.util.ArrayList;
 
 public class FoodMenuAdapter extends androidx.recyclerview.widget.RecyclerView.Adapter<FoodMenuAdapter.FoodItemViewHolder>{
     public ArrayList<FoodItem> foodItems;
+
+    public int [] foodImages = {R.drawable._fries,R.drawable._fried_rice,R.drawable._chinese_noodles,R.drawable._pizza,R.drawable._biriyani};
+    public Integer ImageIndex = 0;
     public OnFoodItemListener OnFoodItemListener;
     public FoodMenuAdapter(ArrayList<FoodItem> foodItems, OnFoodItemListener activity){
         this.foodItems = foodItems;
@@ -23,7 +26,8 @@ public class FoodMenuAdapter extends androidx.recyclerview.widget.RecyclerView.A
         FoodItem foodItem = foodItems.get(position);
         holder.foodName.setText(foodItem.name);
         holder.foodPrice.setText(foodItem.price.toString());
-        holder.foodImage.setImageResource(R.drawable.baseline_emoji_food_beverage_24);
+        holder.foodImage.setImageResource(foodImages[ImageIndex]);
+        ImageIndex = (ImageIndex + 1) % foodImages.length;
 holder.itemView.setOnClickListener(new android.view.View.OnClickListener() {
             @Override
             public void onClick(android.view.View v) {

@@ -4,11 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/offer_item"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:padding="5dp">
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/offerCard"
         android:layout_width="307dp"
-        android:layout_height="212dp"
+        android:layout_height="170dp"
+        android:elevation="10dp"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="10dp"
+        app:cardMaxElevation="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
