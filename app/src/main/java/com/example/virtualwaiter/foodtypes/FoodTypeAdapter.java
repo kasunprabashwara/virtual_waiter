@@ -1,9 +1,12 @@
 package com.example.virtualwaiter.foodtypes;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
+
 
 public class FoodTypeAdapter extends FragmentStateAdapter {
 
@@ -13,6 +16,7 @@ public class FoodTypeAdapter extends FragmentStateAdapter {
 
     @Override
     public Fragment createFragment(int position) {
+
         switch (position){
             case 0:
                 return new MainCourseFragment();

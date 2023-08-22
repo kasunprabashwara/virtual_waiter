@@ -22,13 +22,13 @@
         android:layout_height="63dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:background="@color/colorPrimary"
+        android:background="@color/PrimaryAccent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@drawable/baseline_emoji_food_beverage_24" />
 
     <TextView
-        android:id="@+id/foodPrice"
+        android:id="@+id/unitPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"

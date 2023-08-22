@@ -74,8 +74,8 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/orderedItems"
-            android:layout_width="0dp"
-            android:layout_height="697dp"
+            android:layout_width="458dp"
+            android:layout_height="621dp"
             android:layout_marginTop="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
