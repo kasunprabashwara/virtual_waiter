@@ -2,6 +2,7 @@ package com.example.virtualwaiter.foodtypes;
 
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,7 +28,7 @@ public class MainCourseFragment extends Fragment {
         View view =inflater.inflate(R.layout.fragment_main_course, container, false);
         ArrayList<FoodItem> mainCourseItems = new ArrayList<>();
         RecyclerView mainCourseMenu = view.findViewById(R.id.mainCourseMenu);
-        mainCourseMenu.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
+        mainCourseMenu.setLayoutManager(new GridLayoutManager(getContext(), 3));
         FoodMenuAdapter foodMenuAdapter = new FoodMenuAdapter(mainCourseItems, (FoodMenuAdapter.OnFoodItemListener) getActivity());
         mainCourseMenu.setAdapter(foodMenuAdapter);
 
@@ -41,7 +42,7 @@ public class MainCourseFragment extends Fragment {
                             String description = document.getString("description"); // Replace with actual field name
                             Integer price = document.getLong("price").intValue(); // Replace with actual field name
                             Log.d("FirestoreData", "Name: " + name + ", Description: " + description);
-                            mainCourseItems.add(new FoodItem(name, price));
+                            mainCourseItems.add(new FoodItem(name, price, description));
                         }
                         foodMenuAdapter.notifyDataSetChanged();
                     }

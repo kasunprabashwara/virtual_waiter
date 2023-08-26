@@ -11,36 +11,82 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/checkoutArea"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="170dp"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
         android:background="@drawable/rounded_corners"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/foodMenu"
-        app:layout_constraintTop_toBottomOf="@+id/orderedList"
-        app:layout_constraintVertical_bias="1.0">
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/foodMenu">
 
         <Button
-            android:id="@+id/button2"
-            android:layout_width="195dp"
-            android:layout_height="65dp"
+            android:id="@+id/checkOutButton"
+            android:layout_width="154dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="280dp"
+            android:layout_marginTop="104dp"
             android:backgroundTint="@color/LightAccent"
+            android:gravity="center_horizontal|center_vertical"
             android:text="Checkout"
             android:textSize="24sp"
             app:cornerRadius="10dp"
-            tools:layout_editor_absoluteX="213dp"
-            tools:layout_editor_absoluteY="59dp" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="12dp"
+            android:text="Total Price (before discounts)  Rs."
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/beforeDiscount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="76dp"
+            android:layout_marginTop="12dp"
+            android:text="200"
+            android:textSize="20sp"
+            app:layout_constraintStart_toEndOf="@+id/textView9"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/beforeDiscount3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="52dp"
+            android:layout_marginTop="36dp"
+            android:text="200"
+            android:textSize="34sp"
+            app:layout_constraintStart_toEndOf="@+id/textView10"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="191dp"
+            android:layout_marginTop="36dp"
+            android:text="Total Price Rs."
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/topBar"
         android:layout_width="0dp"
-        android:layout_height="51dp"
-        android:layout_marginEnd="10dp"
-        android:background="@drawable/rounded_corners"
-        android:backgroundTint="@color/LightAccent"
+        android:layout_height="55dp"
+        android:background="@color/white"
+        android:backgroundTint="@color/PrimaryAccent"
         app:layout_constraintEnd_toStartOf="@+id/orderedList"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -49,7 +95,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="124dp"
-            android:text="Raya Restuarent"
+            android:backgroundTint="@color/PrimaryAccent"
+            android:text="Restuarent "
             android:textColor="@color/white"
             android:textSize="24sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -59,14 +106,24 @@
         <Button
             android:id="@+id/button"
             android:layout_width="176dp"
-            android:layout_height="37dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="68dp"
-            android:backgroundTint="@color/LightAccent"
+            android:layout_height="48dp"
+            android:layout_marginEnd="64dp"
+            android:backgroundTint="@color/PrimaryAccent"
             android:text="Table info"
             android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.428" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="45dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="52dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/_logo" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -127,19 +184,26 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/orderedList"
-        android:layout_width="433dp"
-        android:layout_height="760dp"
+        android:layout_width="452dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="10dp"
         android:background="@drawable/rounded_corners"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/checkoutArea"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="68dp"
+            android:layout_width="470dp"
+            android:layout_height="103dp"
+            android:layout_marginTop="-15dp"
+            android:layout_marginEnd="-15dp"
+            android:background="@drawable/rounded_corners"
+            android:backgroundTint="@color/PrimaryAccent"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
             android:text="Ordered Items"
+            android:textColor="@color/white"
             android:textSize="34sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -149,7 +213,6 @@
             android:id="@+id/orderedItems"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -160,7 +223,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/offersList"
         android:layout_width="0dp"
-        android:layout_height="180dp"
+        android:layout_height="100dp"
         android:layout_marginEnd="10dp"
         android:background="@drawable/rounded_corners"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -43,7 +43,7 @@ public class DrinksFragment extends Fragment {
                             String description = document.getString("description"); // Replace with actual field name
                             Integer price = document.getLong("price").intValue(); // Replace with actual field name
                             Log.d("FirestoreData", "Name: " + name + ", Description: " + description);
-                            drinksItems.add(new FoodItem(name, price));
+                            drinksItems.add(new FoodItem(name, price, description));
                         }
                         foodMenuAdapter.notifyDataSetChanged();
                     }

@@ -48,11 +48,13 @@ holder.itemView.setOnClickListener(new android.view.View.OnClickListener() {
         public android.widget.TextView foodName;
         public android.widget.TextView foodPrice;
         public android.widget.ImageView foodImage;
+        public android.widget.TextView foodDescription;
         public FoodItemViewHolder(android.view.View itemView) {
             super(itemView);
             foodName = itemView.findViewById(R.id.foodName);
             foodPrice = itemView.findViewById(R.id.unitPrice);
             foodImage = itemView.findViewById(R.id.foodImage);
+            foodDescription = itemView.findViewById(R.id.description);
         }
     }
 }

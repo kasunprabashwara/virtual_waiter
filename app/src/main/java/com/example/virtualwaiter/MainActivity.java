@@ -1,12 +1,17 @@
 package com.example.virtualwaiter;
 
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 import androidx.recyclerview.widget.RecyclerView;
-import android.content.Intent;
+
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RatingBar;
 
 import com.example.virtualwaiter.datatypes.FoodItem;
 import com.example.virtualwaiter.datatypes.OfferItem;
@@ -79,7 +84,28 @@ public class MainActivity extends AppCompatActivity implements FoodMenuAdapter.O
                     }
                 }
         );
+        //set up checkout button
+        findViewById(R.id.checkOutButton).setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            View popUpView = getLayoutInflater().inflate(R.layout.pop_up_review, null);
+            AlertDialog dialog = builder.create();
 
+            // Initialize pop-up components
+            RatingBar ratingBar = popUpView.findViewById(R.id.ratingBar);
+            EditText reviewEditText = popUpView.findViewById(R.id.review);
+            Button submitButton = popUpView.findViewById(R.id.reveiwSubmit);
+
+            // Handle submission
+            submitButton.setOnClickListener(a -> {
+                float rating = ratingBar.getRating();
+                String review = reviewEditText.getText().toString();
+                Log.d("heyyou", "onClick: " + rating + " " + review);
+                dialog.dismiss();
+            });
+
+            builder.setView(popUpView);
+            dialog.show();
+        });
     }
 
     @Override
