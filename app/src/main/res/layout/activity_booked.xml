@@ -35,7 +35,7 @@
 
     <TextView
         android:id="@+id/bookedtext3"
-        android:layout_width="871dp"
+        android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:layout_marginTop="72dp"
         android:text="If you are the one who reserved this table,  please log in "

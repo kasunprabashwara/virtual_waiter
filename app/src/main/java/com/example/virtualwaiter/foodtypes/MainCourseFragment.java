@@ -28,7 +28,7 @@ public class MainCourseFragment extends Fragment {
         View view =inflater.inflate(R.layout.fragment_main_course, container, false);
         ArrayList<FoodItem> mainCourseItems = new ArrayList<>();
         RecyclerView mainCourseMenu = view.findViewById(R.id.mainCourseMenu);
-        mainCourseMenu.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        mainCourseMenu.setLayoutManager(new GridLayoutManager(getContext(), 4));
         FoodMenuAdapter foodMenuAdapter = new FoodMenuAdapter(mainCourseItems, (FoodMenuAdapter.OnFoodItemListener) getActivity());
         mainCourseMenu.setAdapter(foodMenuAdapter);
 
