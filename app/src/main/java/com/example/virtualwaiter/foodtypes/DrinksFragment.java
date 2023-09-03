@@ -3,6 +3,7 @@ package com.example.virtualwaiter.foodtypes;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,12 +27,12 @@ public class DrinksFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view =inflater.inflate(R.layout.fragment_drinks, container, false);
-        ArrayList<FoodItem> drinksItems = new ArrayList<>();
-        RecyclerView drinksMenu = view.findViewById(R.id.drinksMenu);
-        drinksMenu.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
-        FoodMenuAdapter foodMenuAdapter = new FoodMenuAdapter(drinksItems, (FoodMenuAdapter.OnFoodItemListener) getActivity());
-        drinksMenu.setAdapter(foodMenuAdapter);
+        View view =inflater.inflate(R.layout.fragment_main_course, container, false);
+        ArrayList<FoodItem> mainCourseItems = new ArrayList<>();
+        RecyclerView mainCourseMenu = view.findViewById(R.id.mainCourseMenu);
+        mainCourseMenu.setLayoutManager(new GridLayoutManager(getContext(), 4));
+        FoodMenuAdapter foodMenuAdapter = new FoodMenuAdapter(mainCourseItems, (FoodMenuAdapter.OnFoodItemListener) getActivity());
+        mainCourseMenu.setAdapter(foodMenuAdapter);
 
         CollectionReference foods= FirebaseFirestore.getInstance().collection("foods");
         foods.whereEqualTo("type", "Drink")
@@ -43,7 +44,7 @@ public class DrinksFragment extends Fragment {
                             String description = document.getString("description"); // Replace with actual field name
                             Integer price = document.getLong("price").intValue(); // Replace with actual field name
                             Log.d("FirestoreData", "Name: " + name + ", Description: " + description);
-                            drinksItems.add(new FoodItem(name, price, description));
+                            mainCourseItems.add(new FoodItem(name, price, description));
                         }
                         foodMenuAdapter.notifyDataSetChanged();
                     }

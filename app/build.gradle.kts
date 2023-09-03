@@ -39,6 +39,7 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment:2.7.0")
     implementation("androidx.navigation:navigation-ui:2.7.0")
     implementation("com.google.firebase:firebase-firestore:24.7.0")
+    implementation("com.google.firebase:firebase-auth:21.0.1")
     implementation("androidx.annotation:annotation:1.6.0")
     implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.0"))
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.1")

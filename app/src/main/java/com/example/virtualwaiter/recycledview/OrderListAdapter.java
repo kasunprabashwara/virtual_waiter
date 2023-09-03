@@ -45,7 +45,7 @@ public class OrderListAdapter extends androidx.recyclerview.widget.RecyclerView.
             foodName = itemView.findViewById(R.id.foodName);
             foodPrice = itemView.findViewById(R.id.foodPrice);
             foodImage = itemView.findViewById(R.id.foodImage);
-            quantity = itemView.findViewById(R.id.quantity);
+            quantity = itemView.findViewById(R.id.orderQuantity);
             totalPrice = itemView.findViewById(R.id.totalPrice);
             status = itemView.findViewById(R.id.status);
             Log.d("hey", "OrderItemViewHolder: " + foodName.getText());
