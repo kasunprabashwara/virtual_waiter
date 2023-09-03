@@ -55,7 +55,7 @@ holder.itemView.setOnClickListener(new android.view.View.OnClickListener() {
             foodName = itemView.findViewById(R.id.foodName);
             foodPrice = itemView.findViewById(R.id.unitPrice);
             foodImage = itemView.findViewById(R.id.foodImage);
-            foodDescription = itemView.findViewById(R.id.description);
+            foodDescription = itemView.findViewById(R.id.orderDescription);
         }
     }
 }

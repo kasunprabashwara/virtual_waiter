@@ -8,7 +8,7 @@
     android:elevation="10dp">
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/bookingLabel"
         android:layout_width="wrap_content"
         android:layout_height="25dp"
         android:layout_marginTop="32dp"
@@ -26,13 +26,14 @@
         android:isIndicator="false"
         android:numStars="5"
         android:progressTint="#E8D10A"
+        android:rating="0"
         android:stepSize="1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView7" />
+        app:layout_constraintTop_toBottomOf="@+id/tableNumberLabel" />
 
     <TextView
-        android:id="@+id/textView7"
+        android:id="@+id/tableNumberLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
@@ -40,7 +41,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView8" />
+        app:layout_constraintTop_toBottomOf="@+id/tableInfoTopic" />
 
     <EditText
         android:id="@+id/review"
@@ -53,7 +54,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+        app:layout_constraintTop_toBottomOf="@+id/bookingLabel" />
 
     <Button
         android:id="@+id/editButton"
@@ -69,7 +70,7 @@
         app:layout_constraintTop_toBottomOf="@+id/review" />
 
     <TextView
-        android:id="@+id/textView8"
+        android:id="@+id/tableInfoTopic"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"

@@ -21,7 +21,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/bookedtext2"
+        android:id="@+id/bookedName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="272dp"
@@ -45,7 +45,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bookedtext2" />
+        app:layout_constraintTop_toBottomOf="@+id/bookedName" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="529dp"
@@ -69,16 +69,16 @@
             android:gravity="center|left"
             android:text="Password"
             android:textSize="24sp"
-            app:layout_constraintEnd_toStartOf="@+id/editTextTextPassword"
-            app:layout_constraintTop_toTopOf="@+id/editTextTextPassword" />
+            app:layout_constraintEnd_toStartOf="@+id/bookedPassword"
+            app:layout_constraintTop_toTopOf="@+id/bookedPassword" />
 
         <EditText
-            android:id="@+id/editTextTextEmailAddress"
+            android:id="@+id/bookedEmailAddress"
             android:layout_width="278dp"
             android:layout_height="51dp"
             android:ems="10"
             android:inputType="textEmailAddress"
-            app:layout_constraintBottom_toTopOf="@+id/editTextTextPassword"
+            app:layout_constraintBottom_toTopOf="@+id/bookedPassword"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.848"
             app:layout_constraintStart_toStartOf="parent"
@@ -86,7 +86,7 @@
             app:layout_constraintVertical_bias="0.342" />
 
         <EditText
-            android:id="@+id/editTextTextPassword"
+            android:id="@+id/bookedPassword"
             android:layout_width="281dp"
             android:layout_height="43dp"
             android:layout_marginBottom="96dp"
@@ -105,13 +105,13 @@
             android:gravity="center|left"
             android:text="Email "
             android:textSize="24sp"
-            app:layout_constraintEnd_toStartOf="@+id/editTextTextEmailAddress"
+            app:layout_constraintEnd_toStartOf="@+id/bookedEmailAddress"
             app:layout_constraintHorizontal_bias="0.414"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/editTextTextEmailAddress" />
+            app:layout_constraintTop_toTopOf="@+id/bookedEmailAddress" />
 
         <Button
-            android:id="@+id/loginButton"
+            android:id="@+id/bookedLoginButton"
             android:layout_width="151dp"
             android:layout_height="55dp"
             android:layout_marginBottom="16dp"
