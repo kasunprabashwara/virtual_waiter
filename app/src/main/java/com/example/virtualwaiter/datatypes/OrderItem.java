@@ -17,6 +17,7 @@ public class OrderItem {
     public String status;
     public String notes;
     public String orderId;
+    public String sessionID;
     private OrderIdCallback callback;
 
     public interface OrderIdCallback {

@@ -1,6 +1,7 @@
 package com.example.virtualwaiter.datatypes;
 
-import java.sql.Timestamp;
+
+import com.google.firebase.Timestamp;
 
 public class Booking {
     public String name;

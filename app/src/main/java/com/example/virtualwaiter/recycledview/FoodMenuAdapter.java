@@ -2,6 +2,8 @@ package com.example.virtualwaiter.recycledview;
 
 import com.example.virtualwaiter.datatypes.FoodItem;
 import com.example.virtualwaiter.R;
+import android.widget.TextView;
+import android.widget.ImageView;
 
 import java.util.ArrayList;
 
@@ -46,10 +48,10 @@ holder.itemView.setOnClickListener(new android.view.View.OnClickListener() {
     }
 
     public static class FoodItemViewHolder extends androidx.recyclerview.widget.RecyclerView.ViewHolder{
-        public android.widget.TextView foodName;
-        public android.widget.TextView foodPrice;
-        public android.widget.ImageView foodImage;
-        public android.widget.TextView foodDescription;
+        public TextView foodName;
+        public TextView foodPrice;
+        public ImageView foodImage;
+        public TextView foodDescription;
         public FoodItemViewHolder(android.view.View itemView) {
             super(itemView);
             foodName = itemView.findViewById(R.id.foodName);
