@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.example.virtualwaiter.R;
 import com.example.virtualwaiter.datatypes.OfferItem;
+import com.squareup.picasso.Picasso;
 
 public class OfferSliderAdapter extends androidx.recyclerview.widget.RecyclerView.Adapter<OfferSliderAdapter.OfferItemViewHolder>{
     public java.util.ArrayList<OfferItem> offerItems;
@@ -19,8 +20,8 @@ public class OfferSliderAdapter extends androidx.recyclerview.widget.RecyclerVie
     @Override
     public void onBindViewHolder(OfferItemViewHolder holder, int position) {
         OfferItem offerItem = offerItems.get(position);
-        Log.d("hey", "onBindViewHolder: " + offerItem.name);
-        holder.offerImage.setImageResource(offerItem.image);
+        String path ="https://i.ibb.co/m48NQyc/image-5.png";
+        Picasso.get().load(path).placeholder(offerItem.image).error(R.drawable._offer3).into(holder.offerImage);
     }
     @Override
     public int getItemCount() {

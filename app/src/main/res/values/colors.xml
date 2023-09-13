@@ -6,7 +6,10 @@
     <color name="Gray">#E7E6E6</color>
     <color name="PrimaryAccent">#033C65</color>
     <color name="LightAccent">#076BB2</color>
-    <color name="Ordered">#FFC107</color>
+    <color name="Ordered">#07A8FF</color>
+    <color name="Preparing">#2BDEE4</color>
+    <color name="Prepared">#0EF18F</color>
+    <color name="Delivering">#23C63E</color>
     <color name="Success">#009A3E</color>
     <color name="Failure">#D40000</color>
 </resources>

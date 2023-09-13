@@ -22,8 +22,6 @@ import com.example.virtualwaiter.datatypes.Booking;
 import com.example.virtualwaiter.datatypes.FoodItem;
 import com.example.virtualwaiter.datatypes.OfferItem;
 import com.example.virtualwaiter.datatypes.OrderItem;
-import com.example.virtualwaiter.datatypes.Review;
-import com.example.virtualwaiter.datatypes.SessionManager;
 import com.example.virtualwaiter.recycledview.FoodMenuAdapter;
 import com.example.virtualwaiter.foodtypes.FoodTypeAdapter;
 import com.example.virtualwaiter.recycledview.OfferSliderAdapter;
@@ -33,8 +31,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements FoodMenuAdapter.OnFoodItemListener {
     private FoodTypeAdapter foodTypeAdapter;
@@ -59,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements FoodMenuAdapter.O
                 "virtualWaiterTableConfig", 0);
         SharedPreferences.Editor editor = sharedPref.edit();
         tableID = sharedPref.getInt("tableID", 1);
+        Log.d("heyyou", "tableID: "+tableID);
         setUpOrderedList();
 
         setUpOffersList();
@@ -136,6 +133,7 @@ public class MainActivity extends AppCompatActivity implements FoodMenuAdapter.O
                 Toast.makeText(this, "No orders to checkout", Toast.LENGTH_SHORT).show();
                 return;
             }
+            sessionManager.checkOut();
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             View popUpView = getLayoutInflater().inflate(R.layout.pop_up_review, null);
             RatingBar ratingBar = popUpView.findViewById(R.id.ratingBar);
@@ -159,7 +157,6 @@ public class MainActivity extends AppCompatActivity implements FoodMenuAdapter.O
             dialog.show();
             CountDownTimer reviewTimer = new CountDownTimer(60000, 500) {
                 public void onTick(long millisUntilFinished) {
-                    Log.d("heyyou", "onTick: "+millisUntilFinished);
                     if(!(dialog.isShowing())){
                         this.onFinish();
                         this.cancel();
@@ -202,8 +199,7 @@ public class MainActivity extends AppCompatActivity implements FoodMenuAdapter.O
                     }
                 }
         );
-        foodtypeViewPager.registerOnPageChangeCallback(
-                new ViewPager2.OnPageChangeCallback() {
+        foodtypeViewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
                     @Override
                     public void onPageSelected(int position) {
                         foodtypeTabLayout.selectTab(foodtypeTabLayout.getTabAt(position));
@@ -257,7 +253,7 @@ public class MainActivity extends AppCompatActivity implements FoodMenuAdapter.O
         confirmButton.setOnClickListener(v -> {
             Integer quantityValue = Integer.parseInt(quantity.getText().toString());
             String note = notes.getText().toString();
-            OrderItem orderItem = new OrderItem(foodItem.name, R.drawable._fried_rice, foodItem.price, quantityValue, tableID ,note);
+            OrderItem orderItem = new OrderItem(foodItem.name, foodItem.price, quantityValue, tableID ,note);
             orderItem.setCallback(orderId -> {
                 if(!onGoingSession){
                     onGoingSession = true;
@@ -291,7 +287,7 @@ public class MainActivity extends AppCompatActivity implements FoodMenuAdapter.O
 
     public void setUpBooking(Booking booking){
         Intent intent = new Intent(this, BookedActivity.class);
-        intent.putExtra("tableId", booking.tableID);
+        intent.putExtra("tableID", booking.tableID);
         intent.putExtra("dateTime", booking.dateTime.toString());
         intent.putExtra("email", booking.email);
         intent.putExtra("name", booking.name);

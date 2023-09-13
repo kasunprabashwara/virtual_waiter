@@ -31,12 +31,7 @@ public class FoodMenuAdapter extends androidx.recyclerview.widget.RecyclerView.A
         holder.foodDescription.setText(foodItem.description);
         holder.foodImage.setImageResource(foodImages[ImageIndex]);
         ImageIndex = (ImageIndex + 1) % foodImages.length;
-holder.itemView.setOnClickListener(new android.view.View.OnClickListener() {
-            @Override
-            public void onClick(android.view.View v) {
-                OnFoodItemListener.OnFoodItemClick(foodItem);
-            }
-        });
+        holder.itemView.setOnClickListener(v -> OnFoodItemListener.OnFoodItemClick(foodItem));
     }
     @Override
     public int getItemCount() {

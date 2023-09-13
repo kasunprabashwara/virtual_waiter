@@ -1,8 +1,10 @@
-package com.example.virtualwaiter.datatypes;
+package com.example.virtualwaiter;
 
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.virtualwaiter.datatypes.OrderItem;
+import com.example.virtualwaiter.datatypes.Review;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -19,6 +21,8 @@ public class SessionManager {
     public String sessionID;
     public Review review;
     public Integer totalBill;
+    public Boolean checkedOut = false;
+    public Boolean paid = false;
 
     public FirebaseFirestore db;
 
@@ -35,7 +39,7 @@ public class SessionManager {
     }
 
     public SessionManager(OrderItem orderItem, ArrayList<OrderItem> orderItems){
-        this.tableID = orderItem.tableId;
+        this.tableID = orderItem.tableID;
         this.orderedItemIDs = new ArrayList<>();
         this.orderedItemIDs.add(orderItem.orderId);
         this.orderedItems = orderItems;
@@ -49,6 +53,8 @@ public class SessionManager {
         data.put("orders", Arrays.asList(orderItem.orderId));
         data.put("tableID", this.tableID);
         data.put("totalBill", this.totalBill);
+        data.put("checkedOut", this.checkedOut);
+        data.put("paid", this.paid);
         db.collection("sessions").add(data).addOnSuccessListener(documentReference -> {
             this.sessionID = documentReference.getId();
             orderItem.sessionID = documentReference.getId();
@@ -144,6 +150,22 @@ public class SessionManager {
             });
         }).addOnFailureListener(e -> {
             Log.d("FirestoreData", "Error adding review", e);
+        });
+    }
+    public void checkOut(){
+        this.checkedOut = true;
+        db.collection("sessions").document(this.sessionID).update("checkedOut", true).addOnSuccessListener(documentReference -> {
+            Log.d("FirestoreData", "checkedOut successfully updated!");
+        }).addOnFailureListener(e -> {
+            Log.d("FirestoreData", "Error updating checkedOut", e);
+        });
+    }
+    public void pay(){
+        this.paid = true;
+        db.collection("sessions").document(this.sessionID).update("paid", true).addOnSuccessListener(documentReference -> {
+            Log.d("FirestoreData", "paid successfully updated!");
+        }).addOnFailureListener(e -> {
+            Log.d("FirestoreData", "Error updating paid", e);
         });
     }
 }

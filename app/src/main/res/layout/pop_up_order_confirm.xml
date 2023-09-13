@@ -116,9 +116,11 @@
         android:layout_height="56dp"
         android:layout_marginStart="64dp"
         android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"
         android:backgroundTint="@color/LightAccent"
         android:text="Confirm"
         android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imageView3"
         app:layout_constraintTop_toBottomOf="@+id/orderNotes" />
 
