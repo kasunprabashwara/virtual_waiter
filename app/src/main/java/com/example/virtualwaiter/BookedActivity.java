@@ -14,7 +14,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class BookedActivity extends AppCompatActivity {
     public String name;
-    public Integer tableId;
+    public Integer tableID;
     public String date;
     public String email;
     @Override
@@ -22,7 +22,7 @@ public class BookedActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_booked);
         Intent intent= getIntent();
-        tableId = intent.getIntExtra("tableId", 1);
+        tableID = intent.getIntExtra("tableID", 1);
         date = intent.getStringExtra("dateTime");
         email = intent.getStringExtra("email");
         name = intent.getStringExtra("name");

@@ -4,7 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/orderItem"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp"
+    android:background="@drawable/rounded_corners"
+    android:elevation="10dp">
 
     <TextView
         android:id="@+id/foodName"
@@ -94,12 +97,11 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/status"
+        android:id="@+id/orderStatus"
         android:layout_width="149dp"
         android:layout_height="41dp"
         android:layout_marginStart="176dp"
         android:layout_marginTop="72dp"
-        android:backgroundTint="@color/Ordered"
         android:clickable="false"
         android:text="Ordered"
         app:cornerRadius="8dp"

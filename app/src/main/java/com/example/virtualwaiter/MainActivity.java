@@ -9,6 +9,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -21,43 +22,40 @@ import com.example.virtualwaiter.datatypes.Booking;
 import com.example.virtualwaiter.datatypes.FoodItem;
 import com.example.virtualwaiter.datatypes.OfferItem;
 import com.example.virtualwaiter.datatypes.OrderItem;
-import com.example.virtualwaiter.datatypes.Review;
-import com.example.virtualwaiter.datatypes.Session;
 import com.example.virtualwaiter.recycledview.FoodMenuAdapter;
 import com.example.virtualwaiter.foodtypes.FoodTypeAdapter;
 import com.example.virtualwaiter.recycledview.OfferSliderAdapter;
 import com.example.virtualwaiter.recycledview.OrderListAdapter;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.firestore.FirebaseFirestore;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity implements FoodMenuAdapter.OnFoodItemListener {
     private FoodTypeAdapter foodTypeAdapter;
     private TabLayout foodtypeTabLayout;
     private ViewPager2 foodtypeViewPager;
-    private Session session;
+    private SessionManager sessionManager;
+    private ArrayList<OrderItem> orderedItems = new ArrayList<>();
     private  Boolean onGoingSession = false;
     private Integer tableID;
 
-    private ArrayList<OrderItem> orderedItems = new ArrayList<>();
+    private BookingManager bookingManager;
     private OrderListAdapter orderedListAdapter;
     private FirebaseFirestore db;
+    private CountDownTimer countDownTimer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         db = FirebaseFirestore.getInstance();
-
         //get table id from shared preferences
         SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(
                 "virtualWaiterTableConfig", 0);
         SharedPreferences.Editor editor = sharedPref.edit();
         tableID = sharedPref.getInt("tableID", 1);
-
+        Log.d("heyyou", "tableID: "+tableID);
         setUpOrderedList();
 
         setUpOffersList();
@@ -67,7 +65,17 @@ public class MainActivity extends AppCompatActivity implements FoodMenuAdapter.O
         setUpCheckoutArea();
 
         setUpTableInfoButton(editor);
-
+        
+        bookingManager = new BookingManager(tableID);
+        bookingManager.setBookingCallback(
+                () ->{
+                    Booking booking = bookingManager.getNextBooking();
+                    if(booking == null){
+                        return;
+                    }
+                    waitForBooking(booking);
+                }
+        );
     }
 
     private void setUpTableInfoButton(SharedPreferences.Editor editor) {
@@ -125,6 +133,7 @@ public class MainActivity extends AppCompatActivity implements FoodMenuAdapter.O
                 Toast.makeText(this, "No orders to checkout", Toast.LENGTH_SHORT).show();
                 return;
             }
+            sessionManager.checkOut();
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             View popUpView = getLayoutInflater().inflate(R.layout.pop_up_review, null);
             RatingBar ratingBar = popUpView.findViewById(R.id.ratingBar);
@@ -141,26 +150,30 @@ public class MainActivity extends AppCompatActivity implements FoodMenuAdapter.O
                     return;
                 }
                 //add these data to firebase session document
-                session.review= new Review(review, rating);
-                Map<String, Object> data = new HashMap<>();
-                if(!(review.equals(""))){
-                    data.put("review", review);
-                }
-                data.put("rating", rating);
-                db.collection("reviews").add(data).addOnSuccessListener(documentReference -> {
-                    Log.d("FirestoreData", "review added with ID: " + documentReference.getId());
-                    db.collection("sessions").document(session.sessionID).update("review", documentReference.getId()).addOnSuccessListener(documentReference1 -> {
-                        Log.d("FirestoreData", "review added to session");
-                    }).addOnFailureListener(e -> {
-                        Log.d("FirestoreData", "Error adding review to session", e);
-                    });
-                }).addOnFailureListener(e -> {
-                    Log.d("FirestoreData", "Error adding review", e);
-                });
+                sessionManager.addReview(rating, review);
                 dialog.dismiss();
 
             });
             dialog.show();
+            CountDownTimer reviewTimer = new CountDownTimer(60000, 500) {
+                public void onTick(long millisUntilFinished) {
+                    if(!(dialog.isShowing())){
+                        this.onFinish();
+                        this.cancel();
+                    }
+                }
+                public void onFinish() {
+                    dialog.dismiss();
+                    onGoingSession = false;
+                    orderedItems.clear();
+                    orderedListAdapter.notifyDataSetChanged();
+                    TextView beforeDiscount = findViewById(R.id.beforeDiscount);
+                    TextView afterDiscount = findViewById(R.id.afterDiscount);
+                    beforeDiscount.setText("0");
+                    afterDiscount.setText("0");
+                    waitForBooking(bookingManager.getNextBooking());
+                }
+            }.start();
         });
 
     }
@@ -186,8 +199,7 @@ public class MainActivity extends AppCompatActivity implements FoodMenuAdapter.O
                     }
                 }
         );
-        foodtypeViewPager.registerOnPageChangeCallback(
-                new ViewPager2.OnPageChangeCallback() {
+        foodtypeViewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
                     @Override
                     public void onPageSelected(int position) {
                         foodtypeTabLayout.selectTab(foodtypeTabLayout.getTabAt(position));
@@ -241,24 +253,26 @@ public class MainActivity extends AppCompatActivity implements FoodMenuAdapter.O
         confirmButton.setOnClickListener(v -> {
             Integer quantityValue = Integer.parseInt(quantity.getText().toString());
             String note = notes.getText().toString();
-            OrderItem orderItem = new OrderItem(foodItem.name, R.drawable._fried_rice, foodItem.price, quantityValue, tableID ,note);
+            OrderItem orderItem = new OrderItem(foodItem.name, foodItem.price, quantityValue, tableID ,note);
             orderItem.setCallback(orderId -> {
                 if(!onGoingSession){
                     onGoingSession = true;
-                    session = new Session(orderItem);
-                    session.setCallback(totalBill -> {
+                    sessionManager = new SessionManager(orderItem, orderedItems);
+                    sessionManager.setAddOrderCallback(totalBill -> {
                         TextView beforeDiscount = findViewById(R.id.beforeDiscount);
                         TextView afterDiscount = findViewById(R.id.afterDiscount);
                         beforeDiscount.setText(totalBill.toString());
                         afterDiscount.setText(totalBill.toString());
                     });
+                    sessionManager.setStatusChangeCallback((position) -> {
+                        orderedListAdapter.notifyItemChanged(position);
+                    });
                 }
                 else{
-                    session.addOrder(orderItem);
+                    sessionManager.addOrder(orderItem);
                 }
             });
-            orderedItems.add(orderItem);
-            orderedListAdapter.notifyItemInserted(orderedItems.size() - 1);
+            orderedListAdapter.notifyItemInserted(orderedItems.size());
             dialog.dismiss();
         });
         quantity.setOnEditorActionListener((v, actionId, event) -> {
@@ -273,10 +287,26 @@ public class MainActivity extends AppCompatActivity implements FoodMenuAdapter.O
 
     public void setUpBooking(Booking booking){
         Intent intent = new Intent(this, BookedActivity.class);
-        intent.putExtra("tableId", booking.tableID);
+        intent.putExtra("tableID", booking.tableID);
         intent.putExtra("dateTime", booking.dateTime.toString());
         intent.putExtra("email", booking.email);
         intent.putExtra("name", booking.name);
         startActivity(intent);
+    }
+    public void waitForBooking(Booking booking){
+        if(booking == null){
+            return;
+        }
+        countDownTimer= new CountDownTimer(booking.dateTime.toDate().getTime() - new Date().getTime(), 1000) {
+            public void onTick(long millisUntilFinished) {
+                Log.d("heyyou", "onTick: "+millisUntilFinished);
+                if(onGoingSession){
+                    countDownTimer.cancel();
+                }
+            }
+            public void onFinish() {
+                setUpBooking(booking);
+            }
+        }.start();
     }
 }

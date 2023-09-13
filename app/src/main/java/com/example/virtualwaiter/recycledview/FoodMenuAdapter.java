@@ -2,6 +2,8 @@ package com.example.virtualwaiter.recycledview;
 
 import com.example.virtualwaiter.datatypes.FoodItem;
 import com.example.virtualwaiter.R;
+import android.widget.TextView;
+import android.widget.ImageView;
 
 import java.util.ArrayList;
 
@@ -29,12 +31,7 @@ public class FoodMenuAdapter extends androidx.recyclerview.widget.RecyclerView.A
         holder.foodDescription.setText(foodItem.description);
         holder.foodImage.setImageResource(foodImages[ImageIndex]);
         ImageIndex = (ImageIndex + 1) % foodImages.length;
-holder.itemView.setOnClickListener(new android.view.View.OnClickListener() {
-            @Override
-            public void onClick(android.view.View v) {
-                OnFoodItemListener.OnFoodItemClick(foodItem);
-            }
-        });
+        holder.itemView.setOnClickListener(v -> OnFoodItemListener.OnFoodItemClick(foodItem));
     }
     @Override
     public int getItemCount() {
@@ -46,10 +43,10 @@ holder.itemView.setOnClickListener(new android.view.View.OnClickListener() {
     }
 
     public static class FoodItemViewHolder extends androidx.recyclerview.widget.RecyclerView.ViewHolder{
-        public android.widget.TextView foodName;
-        public android.widget.TextView foodPrice;
-        public android.widget.ImageView foodImage;
-        public android.widget.TextView foodDescription;
+        public TextView foodName;
+        public TextView foodPrice;
+        public ImageView foodImage;
+        public TextView foodDescription;
         public FoodItemViewHolder(android.view.View itemView) {
             super(itemView);
             foodName = itemView.findViewById(R.id.foodName);

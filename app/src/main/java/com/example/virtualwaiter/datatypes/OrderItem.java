@@ -9,28 +9,28 @@ import java.util.Map;
 
 public class OrderItem {
     public String name;
-    public int image;
+
     public Integer price;
     public Integer quantity;
     public Integer totalPrice;
-    public Integer tableId;
+    public Integer tableID;
     public String status;
     public String notes;
     public String orderId;
+    public String sessionID;
     private OrderIdCallback callback;
 
     public interface OrderIdCallback {
         void onOrderIdReceived(String orderId);
     }
 
-    public OrderItem(String name, int image, Integer price, Integer quantity,Integer tableId, String notes ) {
+    public OrderItem(String name, Integer price, Integer quantity,Integer tableID, String notes ) {
         this.name = name;
-        this.image = image;
         this.price = price;
         this.quantity = quantity;
         this.totalPrice = price * quantity;
         this.status = "Ordered";
-        this.tableId = tableId;
+        this.tableID = tableID;
         this.notes = notes;
 
 
@@ -38,12 +38,11 @@ public class OrderItem {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         Map<String, Object> data = new HashMap<>();
         data.put("name", this.name);
-        data.put("image", this.image);
         data.put("price", this.price);
         data.put("quantity", this.quantity);
         data.put("totalPrice", this.totalPrice);
         data.put("status", this.status);
-        data.put("tableId", this.tableId);
+        data.put("tableID", this.tableID);
         data.put("notes", this.notes);
         db.collection("orders").add(data).addOnSuccessListener(documentReference -> {
             this.orderId = documentReference.getId();
@@ -56,4 +55,6 @@ public class OrderItem {
     public void setCallback(OrderIdCallback callback) {
         this.callback = callback;
     }
+
+
 }
