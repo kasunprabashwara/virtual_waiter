@@ -5,15 +5,14 @@
     android:id="@+id/orderItem"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="5dp"
     android:background="@drawable/rounded_corners"
     android:elevation="10dp">
 
     <TextView
         android:id="@+id/foodName"
-        android:layout_width="108dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="20dp"
         android:text="Food name"
         app:layout_constraintStart_toEndOf="@+id/foodImage"
@@ -23,55 +22,61 @@
         android:id="@+id/foodName2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="88dp"
-        android:layout_marginTop="72dp"
-        android:text="Qty :"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:text="X"
         android:textSize="18sp"
-        app:layout_constraintStart_toEndOf="@+id/foodImage"
+        app:layout_constraintStart_toEndOf="@+id/foodName"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/orderQuantity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="132dp"
-        android:layout_marginTop="72dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="12dp"
         android:text="3"
-        android:textSize="18sp"
-        app:layout_constraintStart_toEndOf="@+id/foodImage"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/foodName2"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/totalPrice"
         android:layout_width="wrap_content"
         android:layout_height="42dp"
-        android:layout_marginStart="248dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginStart="108dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="10dp"
         android:text="300"
         android:textSize="34sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/foodImage"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/unitPrice"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/foodName4"
         android:layout_width="0dp"
         android:layout_height="26dp"
-        android:layout_marginStart="140dp"
-        android:layout_marginTop="28dp"
-        android:text=" Price -   Rs."
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="Price  Rs."
         android:textSize="20sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/foodImage"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/unitPrice" />
 
     <ImageView
         android:id="@+id/foodImage"
-        android:layout_width="96dp"
-        android:layout_height="98dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:background="@color/white"
+        android:layout_width="119dp"
+        android:layout_height="96dp"
+        android:layout_marginStart="10dp"
+        android:background="@drawable/rounded_corners"
         android:backgroundTint="@color/white"
-        android:scaleType="fitCenter"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@drawable/baseline_emoji_food_beverage_24" />
@@ -80,32 +85,32 @@
         android:id="@+id/unitPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="44dp"
-        android:text="Unit Price - Rs. "
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:text="Unit Price Rs. "
         app:layout_constraintStart_toEndOf="@+id/foodImage"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/foodName" />
 
     <TextView
         android:id="@+id/foodPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="72dp"
+        android:layout_marginStart="116dp"
+        android:layout_marginTop="8dp"
         android:text="100"
         app:layout_constraintStart_toEndOf="@+id/foodImage"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/foodName" />
 
     <Button
         android:id="@+id/orderStatus"
-        android:layout_width="149dp"
-        android:layout_height="41dp"
-        android:layout_marginStart="176dp"
-        android:layout_marginTop="72dp"
+        android:layout_width="111dp"
+        android:layout_height="0dp"
         android:clickable="false"
         android:text="Ordered"
-        app:cornerRadius="8dp"
-        app:layout_constraintStart_toEndOf="@+id/foodImage"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:cornerRadius="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class OrderItem {
     public String name;
-
+    public String image;
     public Integer price;
     public Integer quantity;
     public Integer totalPrice;
@@ -24,7 +24,7 @@ public class OrderItem {
         void onOrderIdReceived(String orderId);
     }
 
-    public OrderItem(String name, Integer price, Integer quantity,Integer tableID, String notes ) {
+    public OrderItem(String name, Integer price, Integer quantity,Integer tableID, String notes ,String image) {
         this.name = name;
         this.price = price;
         this.quantity = quantity;
@@ -32,7 +32,7 @@ public class OrderItem {
         this.status = "Ordered";
         this.tableID = tableID;
         this.notes = notes;
-
+        this.image = image;
 
         //upload to firestore
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -44,6 +44,7 @@ public class OrderItem {
         data.put("status", this.status);
         data.put("tableID", this.tableID);
         data.put("notes", this.notes);
+        data.put("image", this.image);
         db.collection("orders").add(data).addOnSuccessListener(documentReference -> {
             this.orderId = documentReference.getId();
             callback.onOrderIdReceived(this.orderId);

@@ -41,10 +41,10 @@ public class DrinksFragment extends Fragment {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             String name = document.getString("name");
-                            String description = document.getString("description"); // Replace with actual field name
-                            Integer price = document.getLong("price").intValue(); // Replace with actual field name
-                            Log.d("FirestoreData", "Name: " + name + ", Description: " + description);
-                            mainCourseItems.add(new FoodItem(name, price, description));
+                            String description = document.getString("description");
+                            Integer price = document.getLong("price").intValue();
+                            String image = document.getString("url");
+                            mainCourseItems.add(new FoodItem(name, price, description, image));
                         }
                         foodMenuAdapter.notifyDataSetChanged();
                     }

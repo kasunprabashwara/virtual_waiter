@@ -20,8 +20,7 @@ public class OfferSliderAdapter extends androidx.recyclerview.widget.RecyclerVie
     @Override
     public void onBindViewHolder(OfferItemViewHolder holder, int position) {
         OfferItem offerItem = offerItems.get(position);
-        String path ="https://i.ibb.co/m48NQyc/image-5.png";
-        Picasso.get().load(path).placeholder(offerItem.image).error(R.drawable._offer3).into(holder.offerImage);
+        holder.offerImage.setImageResource(offerItem.image);
     }
     @Override
     public int getItemCount() {

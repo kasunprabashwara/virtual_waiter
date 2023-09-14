@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +29,7 @@ import com.example.virtualwaiter.recycledview.OfferSliderAdapter;
 import com.example.virtualwaiter.recycledview.OrderListAdapter;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -44,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements FoodMenuAdapter.O
     private BookingManager bookingManager;
     private OrderListAdapter orderedListAdapter;
     private FirebaseFirestore db;
+    private Picasso picasso = Picasso.get();
     private CountDownTimer countDownTimer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -244,16 +247,19 @@ public class MainActivity extends AppCompatActivity implements FoodMenuAdapter.O
         EditText quantity = popUpView.findViewById(R.id.orderQuantity);
         TextView totalPrice = popUpView.findViewById(R.id.orderTotalPrice);
         EditText notes = popUpView.findViewById(R.id.orderNotes);
+        ImageView foodImage = popUpView.findViewById(R.id.popupFoodImage);
+        foodImage.setClipToOutline(true);
         foodName.setText(foodItem.name);
         description.setText(foodItem.description);
         foodPrice.setText(foodItem.price.toString());
         totalPrice.setText(foodItem.price.toString());
+        picasso.load(foodItem.image).error(R.drawable.baseline_emoji_food_beverage_24).into(foodImage);
         builder.setView(popUpView);
         AlertDialog dialog = builder.create();
         confirmButton.setOnClickListener(v -> {
             Integer quantityValue = Integer.parseInt(quantity.getText().toString());
             String note = notes.getText().toString();
-            OrderItem orderItem = new OrderItem(foodItem.name, foodItem.price, quantityValue, tableID ,note);
+            OrderItem orderItem = new OrderItem(foodItem.name, foodItem.price, quantityValue, tableID ,note ,foodItem.image);
             orderItem.setCallback(orderId -> {
                 if(!onGoingSession){
                     onGoingSession = true;
