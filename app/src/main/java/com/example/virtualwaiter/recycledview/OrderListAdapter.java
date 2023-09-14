@@ -21,6 +21,7 @@ import androidx.core.content.ContextCompat;
 
 public class OrderListAdapter extends androidx.recyclerview.widget.RecyclerView.Adapter<OrderListAdapter.OrderItemViewHolder>{
     public ArrayList<OrderItem> orderItems;
+    public Picasso picasso;
 
     public OrderListAdapter(ArrayList<OrderItem> orderItems){
         this.orderItems = orderItems;
@@ -29,6 +30,7 @@ public class OrderListAdapter extends androidx.recyclerview.widget.RecyclerView.
     @Override
     public OrderItemViewHolder onCreateViewHolder(android.view.ViewGroup parent, int viewType) {
         android.view.View view = android.view.LayoutInflater.from(parent.getContext()).inflate(R.layout.order_item, parent, false);
+        picasso = Picasso.get();
         return new OrderItemViewHolder(view);
     }
     @Override
@@ -38,8 +40,8 @@ public class OrderListAdapter extends androidx.recyclerview.widget.RecyclerView.
         holder.foodPrice.setText(orderItem.price.toString());
         holder.quantity.setText(orderItem.quantity.toString());
         holder.totalPrice.setText(orderItem.totalPrice.toString());
-        String path ="https://i.ibb.co/m48NQyc/image-5.png";
-        Picasso.get().load(path).error(R.drawable.baseline_emoji_food_beverage_24).into(holder.foodImage);
+        picasso.load(orderItem.image).error(R.drawable.baseline_emoji_food_beverage_24).into(holder.foodImage);
+        holder.foodImage.setClipToOutline(true);
         holder.status.setText(orderItem.status);
         holder.status.setBackgroundColor(ContextCompat.getColor(holder.status.getContext(), getColor(orderItem.status)));
 }

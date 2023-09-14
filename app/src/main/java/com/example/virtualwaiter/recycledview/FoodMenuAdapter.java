@@ -2,6 +2,8 @@ package com.example.virtualwaiter.recycledview;
 
 import com.example.virtualwaiter.datatypes.FoodItem;
 import com.example.virtualwaiter.R;
+import com.squareup.picasso.Picasso;
+
 import android.widget.TextView;
 import android.widget.ImageView;
 
@@ -10,9 +12,7 @@ import java.util.ArrayList;
 
 public class FoodMenuAdapter extends androidx.recyclerview.widget.RecyclerView.Adapter<FoodMenuAdapter.FoodItemViewHolder>{
     public ArrayList<FoodItem> foodItems;
-
-    public int [] foodImages = {R.drawable._fries,R.drawable._pizza,R.drawable._fried_rice,R.drawable._biriyani,R.drawable._chinese_noodles};
-    public Integer ImageIndex = 0;
+    public Picasso picasso;
     public OnFoodItemListener OnFoodItemListener;
     public FoodMenuAdapter(ArrayList<FoodItem> foodItems, OnFoodItemListener activity){
         this.foodItems = foodItems;
@@ -21,6 +21,7 @@ public class FoodMenuAdapter extends androidx.recyclerview.widget.RecyclerView.A
     @Override
     public FoodItemViewHolder onCreateViewHolder(android.view.ViewGroup parent, int viewType) {
         android.view.View view = android.view.LayoutInflater.from(parent.getContext()).inflate(R.layout.food_item, parent, false);
+        picasso = Picasso.get();
         return new FoodItemViewHolder(view);
     }
     @Override
@@ -29,8 +30,8 @@ public class FoodMenuAdapter extends androidx.recyclerview.widget.RecyclerView.A
         holder.foodName.setText(foodItem.name);
         holder.foodPrice.setText(foodItem.price.toString());
         holder.foodDescription.setText(foodItem.description);
-        holder.foodImage.setImageResource(foodImages[ImageIndex]);
-        ImageIndex = (ImageIndex + 1) % foodImages.length;
+        picasso.load(foodItem.image).error(R.drawable.baseline_emoji_food_beverage_24).into(holder.foodImage);
+        holder.foodImage.setClipToOutline(true);
         holder.itemView.setOnClickListener(v -> OnFoodItemListener.OnFoodItemClick(foodItem));
     }
     @Override
