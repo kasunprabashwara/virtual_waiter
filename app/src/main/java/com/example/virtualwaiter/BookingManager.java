@@ -26,7 +26,7 @@ public class BookingManager {
         db.collection("tableBookings").whereEqualTo("tableID", tableID).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 for (QueryDocumentSnapshot document : task.getResult()) {;
-                    Booking booking = new Booking(document.getString("name"), document.getLong("tableID").intValue(), document.getString("email"),document.getTimestamp("dateTime"));
+                    Booking booking = new Booking(document.getString("name"), document.getLong("tableID").intValue(), document.getString("key"),document.getTimestamp("dateTime"));
                     Log.d("FirestoreData",  " booking " + document.getData());
                     bookings.add(booking);
                     long now=new Date().getTime();
@@ -49,7 +49,7 @@ public class BookingManager {
                 }
                 switch (change.getType()) {
                     case ADDED:
-                        Booking booking = new Booking(change.getDocument().getString("name"), change.getDocument().getLong("tableID").intValue(), change.getDocument().getString("email"),change.getDocument().getTimestamp("dateTime"));
+                        Booking booking = new Booking(change.getDocument().getString("name"), change.getDocument().getLong("tableID").intValue(), change.getDocument().getString("key"),change.getDocument().getTimestamp("dateTime"));
                         Log.d("FirestoreData",  " booking " + change.getDocument().getData());
                         bookings.add(booking);
                         long now=new Date().getTime();

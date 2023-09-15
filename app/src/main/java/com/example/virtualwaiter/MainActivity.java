@@ -296,7 +296,7 @@ public class MainActivity extends AppCompatActivity implements FoodMenuAdapter.O
         Intent intent = new Intent(this, BookedActivity.class);
         intent.putExtra("tableID", booking.tableID);
         intent.putExtra("dateTime", booking.dateTime.toString());
-        intent.putExtra("email", booking.email);
+        intent.putExtra("key",booking.key);
         intent.putExtra("name", booking.name);
         startActivity(intent);
     }
