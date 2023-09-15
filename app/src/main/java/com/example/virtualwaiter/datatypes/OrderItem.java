@@ -44,7 +44,7 @@ public class OrderItem {
         data.put("status", this.status);
         data.put("tableID", this.tableID);
         data.put("notes", this.notes);
-        data.put("image", this.image);
+        data.put("url", this.image);
         db.collection("orders").add(data).addOnSuccessListener(documentReference -> {
             this.orderId = documentReference.getId();
             callback.onOrderIdReceived(this.orderId);

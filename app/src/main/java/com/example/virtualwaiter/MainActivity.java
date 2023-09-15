@@ -1,11 +1,11 @@
 package com.example.virtualwaiter;
 
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -27,6 +27,7 @@ import com.example.virtualwaiter.recycledview.FoodMenuAdapter;
 import com.example.virtualwaiter.foodtypes.FoodTypeAdapter;
 import com.example.virtualwaiter.recycledview.OfferSliderAdapter;
 import com.example.virtualwaiter.recycledview.OrderListAdapter;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
@@ -83,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements FoodMenuAdapter.O
 
     private void setUpTableInfoButton(SharedPreferences.Editor editor) {
         findViewById(R.id.tableInfoButton).setOnClickListener(v -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(MainActivity.this);
             View popUpView = getLayoutInflater().inflate(R.layout.pop_up_table_info, null);
             TextView tableNumber = popUpView.findViewById(R.id.tableNumber);
             TextView tableNumberLabel = popUpView.findViewById(R.id.tableNumberLabel);
@@ -137,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements FoodMenuAdapter.O
                 return;
             }
             sessionManager.checkOut();
-            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(MainActivity.this);
             View popUpView = getLayoutInflater().inflate(R.layout.pop_up_review, null);
             RatingBar ratingBar = popUpView.findViewById(R.id.ratingBar);
             EditText reviewEditText = popUpView.findViewById(R.id.review);
@@ -238,7 +239,7 @@ public class MainActivity extends AppCompatActivity implements FoodMenuAdapter.O
     //these data will be added to the firestore database through the session and orderitem classes
     @Override
     public void OnFoodItemClick(FoodItem foodItem) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(MainActivity.this);
         View popUpView = getLayoutInflater().inflate(R.layout.pop_up_order_confirm, null);
         TextView foodName = popUpView.findViewById(R.id.orderItemName);
         TextView foodPrice = popUpView.findViewById(R.id.orderItemPrice);

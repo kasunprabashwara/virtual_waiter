@@ -43,7 +43,7 @@ public class OrderListAdapter extends androidx.recyclerview.widget.RecyclerView.
         picasso.load(orderItem.image).error(R.drawable.baseline_emoji_food_beverage_24).into(holder.foodImage);
         holder.foodImage.setClipToOutline(true);
         holder.status.setText(orderItem.status);
-        holder.status.setBackgroundColor(ContextCompat.getColor(holder.status.getContext(), getColor(orderItem.status)));
+        holder.status.setTextColor(ContextCompat.getColor(holder.status.getContext(), getColor(orderItem.status)));
 }
 
     @Override
@@ -56,7 +56,7 @@ public class OrderListAdapter extends androidx.recyclerview.widget.RecyclerView.
         public ImageView foodImage;
         public TextView quantity;
         public TextView totalPrice;
-        public Button status;
+        public TextView status;
         public OrderItemViewHolder(android.view.View itemView) {
             super(itemView);
             foodName = itemView.findViewById(R.id.foodName);
