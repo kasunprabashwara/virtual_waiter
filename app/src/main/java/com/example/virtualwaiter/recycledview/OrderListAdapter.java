@@ -65,7 +65,6 @@ public class OrderListAdapter extends androidx.recyclerview.widget.RecyclerView.
             quantity = itemView.findViewById(R.id.orderQuantity);
             totalPrice = itemView.findViewById(R.id.totalPrice);
             status = itemView.findViewById(R.id.orderStatus);
-            Log.d("hey", "OrderItemViewHolder: " + foodName.getText());
         }
     }
     private int getColor(String status){
