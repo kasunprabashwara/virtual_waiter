@@ -29,6 +29,7 @@ import com.example.virtualwaiter.recycledview.OfferSliderAdapter;
 import com.example.virtualwaiter.recycledview.OrderListAdapter;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
@@ -49,18 +50,25 @@ public class MainActivity extends AppCompatActivity implements FoodMenuAdapter.O
     private FirebaseFirestore db;
     private Picasso picasso = Picasso.get();
     private CountDownTimer countDownTimer;
+    private SessionManager.AddOrderCallback addOrderCallback;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         db = FirebaseFirestore.getInstance();
+
         //get table id from shared preferences
-        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(
-                "virtualWaiterTableConfig", 0);
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("virtualWaiterTableConfig", 0);
         SharedPreferences.Editor editor = sharedPref.edit();
         tableID = sharedPref.getInt("tableID", 1);
         Log.d("heyyou", "tableID: "+tableID);
+
         setUpOrderedList();
+
+        //initiate the session manager
+        sessionManager = new SessionManager(tableID,addOrderCallback,orderedListAdapter);
+
 
         setUpOffersList();
 
@@ -69,8 +77,10 @@ public class MainActivity extends AppCompatActivity implements FoodMenuAdapter.O
         setUpCheckoutArea();
 
         setUpTableInfoButton(editor);
-        
+
         bookingManager = new BookingManager(tableID);
+
+        // this callback is called when a booking is found for the table
         bookingManager.setBookingCallback(
                 () ->{
                     Booking booking = bookingManager.getNextBooking();
@@ -80,6 +90,27 @@ public class MainActivity extends AppCompatActivity implements FoodMenuAdapter.O
                     waitForBooking(booking);
                 }
         );
+        //listen to sessions updates
+        db.collection("sessions").addSnapshotListener((value, error) -> {
+            if (error != null) {
+                Log.w("FirestoreData", "session change listen failed.", error);
+                return;
+            }
+            if(value == null){
+                return;
+            }
+            for (DocumentChange change : value.getDocumentChanges()) {
+                Log.d("FirestoreData", "session change: " + change.getDocument().getData());
+                if(!onGoingSession && change.getDocument().getLong("tableID").intValue()==tableID && change.getDocument().getBoolean("checkedOut").equals(false)){
+                    if(change.getType() == DocumentChange.Type.ADDED){
+                        Log.d("FirestoreData", "New session: " + change.getDocument().getData());
+                        sessionManager = new SessionManager(tableID,addOrderCallback,orderedListAdapter);
+                        sessionManager.firebaseDownload(change.getDocument().getId());
+                        onGoingSession = true;
+                    }
+                }
+            }
+        });
     }
 
     private void setUpTableInfoButton(SharedPreferences.Editor editor) {
@@ -138,6 +169,8 @@ public class MainActivity extends AppCompatActivity implements FoodMenuAdapter.O
                 return;
             }
             sessionManager.checkOut();
+            //this will create a new session manager for the next session
+            sessionManager = new SessionManager(tableID,addOrderCallback,orderedListAdapter);
             MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(MainActivity.this);
             View popUpView = getLayoutInflater().inflate(R.layout.pop_up_review, null);
             RatingBar ratingBar = popUpView.findViewById(R.id.ratingBar);
@@ -159,6 +192,8 @@ public class MainActivity extends AppCompatActivity implements FoodMenuAdapter.O
 
             });
             dialog.show();
+
+            //this timer is to close the add review pop up menu after a certain time of inactivity
             CountDownTimer reviewTimer = new CountDownTimer(60000, 500) {
                 public void onTick(long millisUntilFinished) {
                     if(!(dialog.isShowing())){
@@ -230,6 +265,16 @@ public class MainActivity extends AppCompatActivity implements FoodMenuAdapter.O
         orderedList.setLayoutManager(new androidx.recyclerview.widget.LinearLayoutManager(this, RecyclerView.VERTICAL, false));
         orderedListAdapter = new OrderListAdapter(orderedItems);
         orderedList.setAdapter(orderedListAdapter);
+        //this callback is used to update the total bill in the checkout area and ordered list when a new order is added
+        addOrderCallback = (totalBill,orderItem) -> {
+            TextView beforeDiscount = findViewById(R.id.beforeDiscount);
+            TextView afterDiscount = findViewById(R.id.afterDiscount);
+            beforeDiscount.setText(totalBill.toString());
+            afterDiscount.setText(totalBill.toString());
+            orderedItems.add(orderItem);
+            orderedListAdapter.notifyItemInserted(orderedItems.size()-1);
+            Log.d("heyyou", "addOrderCallback: "+orderedItems.size());
+        };
     }
 
 
@@ -261,25 +306,17 @@ public class MainActivity extends AppCompatActivity implements FoodMenuAdapter.O
             Integer quantityValue = Integer.parseInt(quantity.getText().toString());
             String note = notes.getText().toString();
             OrderItem orderItem = new OrderItem(foodItem.name, foodItem.price, quantityValue, tableID ,note ,foodItem.image);
+
+            //this callback is used to get the order id from the orderitem class and add it to the session.
+            onGoingSession = true;
             orderItem.setCallback(orderId -> {
-                if(!onGoingSession){
-                    onGoingSession = true;
-                    sessionManager = new SessionManager(orderItem, orderedItems);
-                    sessionManager.setAddOrderCallback(totalBill -> {
-                        TextView beforeDiscount = findViewById(R.id.beforeDiscount);
-                        TextView afterDiscount = findViewById(R.id.afterDiscount);
-                        beforeDiscount.setText(totalBill.toString());
-                        afterDiscount.setText(totalBill.toString());
-                    });
-                    sessionManager.setStatusChangeCallback((position) -> {
-                        orderedListAdapter.notifyItemChanged(position);
-                    });
-                }
-                else{
-                    sessionManager.addOrder(orderItem);
-                }
+                sessionManager.addOrder(orderItem);
+                TextView beforeDiscount = findViewById(R.id.beforeDiscount);
+                TextView afterDiscount = findViewById(R.id.afterDiscount);
+                beforeDiscount.setText(sessionManager.totalBill.toString());
+                afterDiscount.setText(sessionManager.totalBill.toString());
             });
-            orderedListAdapter.notifyItemInserted(orderedItems.size());
+            orderItem.firebaseUpload();
             dialog.dismiss();
         });
         quantity.setOnEditorActionListener((v, actionId, event) -> {

@@ -18,7 +18,7 @@ public class OrderItem {
     public String notes;
     public String orderId;
     public String sessionID;
-    private OrderIdCallback callback;
+    public OrderIdCallback callback;
 
     public interface OrderIdCallback {
         void onOrderIdReceived(String orderId);
@@ -33,10 +33,13 @@ public class OrderItem {
         this.tableID = tableID;
         this.notes = notes;
         this.image = image;
+    }
 
-        //upload to firestore
+    public void firebaseUpload() {
+        Log.d("FirestoreData", "Uploading to Firestore "+this.name);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         Map<String, Object> data = new HashMap<>();
+        data.put("sessionID", this.sessionID);
         data.put("name", this.name);
         data.put("price", this.price);
         data.put("quantity", this.quantity);
