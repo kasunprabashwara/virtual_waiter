@@ -34,7 +34,7 @@ public class BookedActivity extends AppCompatActivity {
         login.setOnClickListener(v -> {
             String enteredKey = keyEditText.getText().toString();
             if (enteredKey.equals(this.key)) {
-                Toast.makeText(BookedActivity.this, "Wellcome Mr/Mrs "+name+"!",
+                Toast.makeText(BookedActivity.this, "Welcome Mr/Mrs "+name+"!",
                         Toast.LENGTH_SHORT).show();
                 Intent intent1 = new Intent(BookedActivity.this, MainActivity.class);
                 startActivity(intent1);
