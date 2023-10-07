@@ -8,17 +8,73 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class OrderItem {
-    public String name;
-    public String image;
-    public Integer price;
-    public Integer quantity;
-    public Integer totalPrice;
-    public Integer tableID;
-    public String status;
-    public String notes;
-    public String orderId;
-    public String sessionID;
-    public OrderIdCallback callback;
+    private String name;
+    private String image;
+    private Integer price;
+    private Integer quantity;
+    private Integer totalPrice;
+    private Integer tableID;
+    private String status;
+    private String notes;
+    private String orderId;
+    private String sessionID;
+    private OrderIdCallback callback;
+
+    public String getName() {
+        return name;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public Integer getPrice() {
+        return price;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public Integer getTotalPrice() {
+        return totalPrice;
+    }
+
+    public Integer getTableID() {
+        return tableID;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
+
+    public String getSessionID() {
+        return sessionID;
+    }
+
+    public void setSessionID(String sessionID) {
+        this.sessionID = sessionID;
+    }
+
+    public OrderIdCallback getCallback() {
+        return callback;
+    }
 
     public interface OrderIdCallback {
         void onOrderIdReceived(String orderId);
@@ -29,28 +85,28 @@ public class OrderItem {
         this.price = price;
         this.quantity = quantity;
         this.totalPrice = price * quantity;
-        this.status = "Ordered";
+        this.setStatus("Ordered");
         this.tableID = tableID;
         this.notes = notes;
         this.image = image;
     }
 
     public void firebaseUpload() {
-        Log.d("FirestoreData", "Uploading to Firestore "+this.name);
+        Log.d("FirestoreData", "Uploading to Firestore "+ this.getName());
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         Map<String, Object> data = new HashMap<>();
-        data.put("sessionID", this.sessionID);
-        data.put("name", this.name);
-        data.put("price", this.price);
-        data.put("quantity", this.quantity);
-        data.put("totalPrice", this.totalPrice);
-        data.put("status", this.status);
-        data.put("tableID", this.tableID);
-        data.put("notes", this.notes);
-        data.put("url", this.image);
+        data.put("sessionID", this.getSessionID());
+        data.put("name", this.getName());
+        data.put("price", this.getPrice());
+        data.put("quantity", this.getQuantity());
+        data.put("totalPrice", this.getTotalPrice());
+        data.put("status", this.getStatus());
+        data.put("tableID", this.getTableID());
+        data.put("notes", this.getNotes());
+        data.put("url", this.getImage());
         db.collection("orders").add(data).addOnSuccessListener(documentReference -> {
-            this.orderId = documentReference.getId();
-            callback.onOrderIdReceived(this.orderId);
+            this.setOrderId(documentReference.getId());
+            getCallback().onOrderIdReceived(this.getOrderId());
         }).addOnFailureListener(e -> {
             Log.d("FirestoreData", "Error adding document", e);
         });

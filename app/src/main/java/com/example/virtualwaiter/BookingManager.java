@@ -12,9 +12,9 @@ import java.util.Comparator;
 import java.util.Date;
 
 public class BookingManager {
-    public ArrayList<Booking> bookings;
-    public Integer tableID;
-    public FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private ArrayList<Booking> bookings;
+    private Integer tableID;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private BookingCallback callback;
     public interface BookingCallback {
         void onBookingReceived();
@@ -30,8 +30,8 @@ public class BookingManager {
                     Log.d("FirestoreData",  " booking " + document.getData());
                     bookings.add(booking);
                     long now=new Date().getTime();
-                    bookings.removeIf(item -> item.dateTime.toDate().getTime() - now < 0);
-                    bookings.sort(Comparator.comparing(o -> o.dateTime));
+                    bookings.removeIf(item -> item.getDateTime().toDate().getTime() - now < 0);
+                    bookings.sort(Comparator.comparing(o -> o.getDateTime()));
                     callback.onBookingReceived();
                 }
             } else {
@@ -53,8 +53,8 @@ public class BookingManager {
                         Log.d("FirestoreData",  " booking " + change.getDocument().getData());
                         bookings.add(booking);
                         long now=new Date().getTime();
-                        bookings.removeIf(item -> item.dateTime.toDate().getTime() - now < 0);
-                        bookings.sort(Comparator.comparing(o -> o.dateTime));
+                        bookings.removeIf(item -> item.getDateTime().toDate().getTime() - now < 0);
+                        bookings.sort(Comparator.comparing(o -> o.getDateTime()));
                         Log.d("FirestoreData", "bookings size: "+bookings.size());
                         break;
                     case MODIFIED:

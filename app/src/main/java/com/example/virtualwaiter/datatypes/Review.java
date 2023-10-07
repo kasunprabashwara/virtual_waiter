@@ -10,4 +10,12 @@ public class Review {
     public Review(Integer rating){
         this.rating = rating;
     }
+
+    public String getReview() {
+        return review;
+    }
+
+    public Integer getRating() {
+        return rating;
+    }
 }

@@ -295,17 +295,17 @@ public class MainActivity extends AppCompatActivity implements FoodMenuAdapter.O
         EditText notes = popUpView.findViewById(R.id.orderNotes);
         ImageView foodImage = popUpView.findViewById(R.id.popupFoodImage);
         foodImage.setClipToOutline(true);
-        foodName.setText(foodItem.name);
-        description.setText(foodItem.description);
-        foodPrice.setText(foodItem.price.toString());
-        totalPrice.setText(foodItem.price.toString());
-        picasso.load(foodItem.image).error(R.drawable.baseline_emoji_food_beverage_24).into(foodImage);
+        foodName.setText(foodItem.getName());
+        description.setText(foodItem.getDescription());
+        foodPrice.setText(foodItem.getPrice().toString());
+        totalPrice.setText(foodItem.getPrice().toString());
+        picasso.load(foodItem.getImage()).error(R.drawable.baseline_emoji_food_beverage_24).into(foodImage);
         builder.setView(popUpView);
         AlertDialog dialog = builder.create();
         confirmButton.setOnClickListener(v -> {
             Integer quantityValue = Integer.parseInt(quantity.getText().toString());
             String note = notes.getText().toString();
-            OrderItem orderItem = new OrderItem(foodItem.name, foodItem.price, quantityValue, tableID ,note ,foodItem.image);
+            OrderItem orderItem = new OrderItem(foodItem.getName(), foodItem.getPrice(), quantityValue, tableID ,note , foodItem.getImage());
 
             //this callback is used to get the order id from the orderitem class and add it to the session.
             onGoingSession = true;
@@ -313,15 +313,15 @@ public class MainActivity extends AppCompatActivity implements FoodMenuAdapter.O
                 sessionManager.addOrder(orderItem);
                 TextView beforeDiscount = findViewById(R.id.beforeDiscount);
                 TextView afterDiscount = findViewById(R.id.afterDiscount);
-                beforeDiscount.setText(sessionManager.totalBill.toString());
-                afterDiscount.setText(sessionManager.totalBill.toString());
+                beforeDiscount.setText(sessionManager.getTotalBill().toString());
+                afterDiscount.setText(sessionManager.getTotalBill().toString());
             });
             orderItem.firebaseUpload();
             dialog.dismiss();
         });
         quantity.setOnEditorActionListener((v, actionId, event) -> {
             Integer quantityValue = Integer.parseInt(quantity.getText().toString());
-            Integer totalPriceValue = foodItem.price * quantityValue;
+            Integer totalPriceValue = foodItem.getPrice() * quantityValue;
             totalPrice.setText(totalPriceValue.toString());
             return false;
         });
@@ -331,17 +331,17 @@ public class MainActivity extends AppCompatActivity implements FoodMenuAdapter.O
 
     public void setUpBooking(Booking booking){
         Intent intent = new Intent(this, BookedActivity.class);
-        intent.putExtra("tableID", booking.tableID);
-        intent.putExtra("dateTime", booking.dateTime.toString());
-        intent.putExtra("key",booking.key);
-        intent.putExtra("name", booking.name);
+        intent.putExtra("tableID", booking.getTableID());
+        intent.putExtra("dateTime", booking.getDateTime().toString());
+        intent.putExtra("key", booking.getKey());
+        intent.putExtra("name", booking.getName());
         startActivity(intent);
     }
     public void waitForBooking(Booking booking){
         if(booking == null){
             return;
         }
-        countDownTimer= new CountDownTimer(booking.dateTime.toDate().getTime() - new Date().getTime(), 1000) {
+        countDownTimer= new CountDownTimer(booking.getDateTime().toDate().getTime() - new Date().getTime(), 1000) {
             public void onTick(long millisUntilFinished) {
                 Log.d("heyyou", "onTick: "+millisUntilFinished);
                 if(onGoingSession){
