@@ -1,10 +1,7 @@
 package com.example.virtualwaiter.recycledview;
 
-import android.util.Log;
-
 import com.example.virtualwaiter.R;
 import com.example.virtualwaiter.datatypes.OfferItem;
-import com.squareup.picasso.Picasso;
 
 public class OfferSliderAdapter extends androidx.recyclerview.widget.RecyclerView.Adapter<OfferSliderAdapter.OfferItemViewHolder>{
     public java.util.ArrayList<OfferItem> offerItems;
@@ -20,7 +17,7 @@ public class OfferSliderAdapter extends androidx.recyclerview.widget.RecyclerVie
     @Override
     public void onBindViewHolder(OfferItemViewHolder holder, int position) {
         OfferItem offerItem = offerItems.get(position);
-        holder.offerImage.setImageResource(offerItem.image);
+        holder.offerImage.setImageResource(offerItem.getImage());
     }
     @Override
     public int getItemCount() {

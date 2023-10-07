@@ -13,10 +13,10 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class BookedActivity extends AppCompatActivity {
-    public String name;
-    public Integer tableID;
-    public String date;
-    public String key;
+    private String name;
+    private Integer tableID;
+    private String date;
+    private String key;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

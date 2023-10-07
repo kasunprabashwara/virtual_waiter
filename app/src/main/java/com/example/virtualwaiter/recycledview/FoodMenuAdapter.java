@@ -27,10 +27,10 @@ public class FoodMenuAdapter extends androidx.recyclerview.widget.RecyclerView.A
     @Override
     public void onBindViewHolder(FoodItemViewHolder holder, int position) {
         FoodItem foodItem = foodItems.get(position);
-        holder.foodName.setText(foodItem.name);
-        holder.foodPrice.setText(foodItem.price.toString());
-        holder.foodDescription.setText(foodItem.description);
-        picasso.load(foodItem.image).error(R.drawable.baseline_emoji_food_beverage_24).into(holder.foodImage);
+        holder.foodName.setText(foodItem.getName());
+        holder.foodPrice.setText(foodItem.getPrice().toString());
+        holder.foodDescription.setText(foodItem.getDescription());
+        picasso.load(foodItem.getImage()).error(R.drawable.baseline_emoji_food_beverage_24).into(holder.foodImage);
         holder.foodImage.setClipToOutline(true);
         holder.itemView.setOnClickListener(v -> OnFoodItemListener.OnFoodItemClick(foodItem));
     }

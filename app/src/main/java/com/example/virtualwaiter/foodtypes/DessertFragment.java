@@ -24,8 +24,7 @@ import java.util.ArrayList;
 public class DessertFragment extends Fragment {
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view =inflater.inflate(R.layout.fragment_main_course, container, false);
         ArrayList<FoodItem> mainCourseItems = new ArrayList<>();
         RecyclerView mainCourseMenu = view.findViewById(R.id.mainCourseMenu);

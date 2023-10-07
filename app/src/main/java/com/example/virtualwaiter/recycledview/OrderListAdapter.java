@@ -1,18 +1,12 @@
 package com.example.virtualwaiter.recycledview;
 
 
-import android.content.res.ColorStateList;
-import android.graphics.Color;
-import android.util.Log;
-
-import com.example.virtualwaiter.MainActivity;
 import com.example.virtualwaiter.R;
 import com.example.virtualwaiter.datatypes.OrderItem;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.ImageView;
 
@@ -36,14 +30,14 @@ public class OrderListAdapter extends androidx.recyclerview.widget.RecyclerView.
     @Override
     public void onBindViewHolder(OrderItemViewHolder holder, int position) {
         OrderItem orderItem = orderItems.get(position);
-        holder.foodName.setText(orderItem.name);
-        holder.foodPrice.setText(orderItem.price.toString());
-        holder.quantity.setText(orderItem.quantity.toString());
-        holder.totalPrice.setText(orderItem.totalPrice.toString());
-        picasso.load(orderItem.image).error(R.drawable.baseline_emoji_food_beverage_24).into(holder.foodImage);
+        holder.foodName.setText(orderItem.getName());
+        holder.foodPrice.setText(orderItem.getPrice().toString());
+        holder.quantity.setText(orderItem.getQuantity().toString());
+        holder.totalPrice.setText(orderItem.getTotalPrice().toString());
+        picasso.load(orderItem.getImage()).error(R.drawable.baseline_emoji_food_beverage_24).into(holder.foodImage);
         holder.foodImage.setClipToOutline(true);
-        holder.status.setText(orderItem.status);
-        holder.status.setTextColor(ContextCompat.getColor(holder.status.getContext(), getColor(orderItem.status)));
+        holder.status.setText(orderItem.getStatus());
+        holder.status.setTextColor(ContextCompat.getColor(holder.status.getContext(), getColor(orderItem.getStatus())));
 }
 
     @Override

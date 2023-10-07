@@ -14,21 +14,23 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Queue;
 
 
 public class SessionManager {
-    public ArrayList<String> orderedItemIDs; //wil be keeping two list for ease of access. this one is for firestore references
-    public ArrayList<OrderItem> orderedItems;
-    public ArrayDeque<OrderItem> orderQueue;
-    public Integer tableID;
-    public String sessionID;
-    public Review review;
-    public Integer totalBill;
-    public Boolean checkedOut = false;
-    public Boolean paid = false;
+    private ArrayList<String> orderedItemIDs; //wil be keeping two list for ease of access. this one is for firestore references
+    private ArrayList<OrderItem> orderedItems;
+    private Integer tableID;
+    private String sessionID;
+    private Review review;
+    private Integer totalBill;
+    private Boolean checkedOut;
+    private Boolean paid;
 
     public FirebaseFirestore db;
+
+    public Integer getTotalBill() {
+        return totalBill;
+    }
 
     public interface AddOrderCallback {
         void onAddOrderReceived(Integer totalBill,OrderItem orderItem);
@@ -80,19 +82,19 @@ public class SessionManager {
                             String notes = documentSnapshot.getString("notes");
                             String image = documentSnapshot.getString("url");
                             OrderItem orderItem = new OrderItem(name, price, quantity, tableID, notes, image);
-                            orderItem.orderId = orderID;
-                            orderItem.status = status;
-                            orderItem.sessionID = sessionID;
+                            orderItem.setOrderId(orderID);
+                            orderItem.setStatus(status);
+                            orderItem.setSessionID(sessionID);
                             this.orderedItems.add(orderItem);
                             this.orderedItemIDs.add(orderID);
-                            this.totalBill += orderItem.totalPrice;
-                            addOrderCallback.onAddOrderReceived(this.totalBill, orderItem);
+                            this.totalBill = this.getTotalBill() + orderItem.getTotalPrice();
+                            addOrderCallback.onAddOrderReceived(this.getTotalBill(), orderItem);
                             break;
                         case MODIFIED:
                             String newStatus= documentSnapshot.getString("status");
                             for(OrderItem item: this.orderedItems){
-                                if(item.orderId.equals(change.getDocument().getId())){
-                                    item.status = newStatus;
+                                if(item.getOrderId().equals(change.getDocument().getId())){
+                                    item.setStatus(newStatus);
                                     orderListAdapter.notifyItemChanged(this.orderedItems.indexOf(item));
                                     break;
                                 }
@@ -132,13 +134,13 @@ public class SessionManager {
                             String notes = documentSnapshot1.getString("notes");
                             String image = documentSnapshot1.getString("url");
                             OrderItem orderItem = new OrderItem(name, price, quantity, tableID, notes, image);
-                            orderItem.orderId = orderID;
-                            orderItem.status = status;
-                            orderItem.sessionID = sessionID;
+                            orderItem.setOrderId(orderID);
+                            orderItem.setStatus(status);
+                            orderItem.setSessionID(sessionID);
                             this.orderedItems.add(orderItem);
                             this.orderedItemIDs.add(orderID);
-                            this.totalBill += orderItem.totalPrice;
-                            addOrderCallback.onAddOrderReceived(this.totalBill,orderItem);
+                            this.totalBill = this.getTotalBill() + orderItem.getTotalPrice();
+                            addOrderCallback.onAddOrderReceived(this.getTotalBill(),orderItem);
                             Log.d("FirestoreData", "order added to list: " + orderedItems.size());
                         } else {
                             Log.d("FirestoreData", "No such document");
@@ -158,20 +160,20 @@ public class SessionManager {
     public void addOrder(OrderItem orderItem){
         Log.d("FirestoreData", "Session ID: "+this.sessionID);
         this.orderedItems.add(orderItem);
-        this.orderedItemIDs.add(orderItem.orderId);
+        this.orderedItemIDs.add(orderItem.getOrderId());
         if(sessionID.equals("")){
             Map<String,Object> data = new HashMap<>();
             data.put("orders", Arrays.asList());
             data.put("tableID", this.tableID);
-            data.put("totalBill", this.totalBill);
+            data.put("totalBill", this.getTotalBill());
             data.put("checkedOut", this.checkedOut);
             data.put("paid", this.paid);
             db.collection("sessions").add(data).addOnSuccessListener(documentReference -> {
                 this.sessionID = documentReference.getId();
                 setOrderListener();
                 for(OrderItem item: this.orderedItems){
-                    item.sessionID = this.sessionID;
-                    db.collection("orders").document(item.orderId).update("sessionID", this.sessionID).addOnSuccessListener(documentReference1 -> {
+                    item.setSessionID(this.sessionID);
+                    db.collection("orders").document(item.getOrderId()).update("sessionID", this.sessionID).addOnSuccessListener(documentReference1 -> {
                         Log.d("FirestoreData", "sessionID added to order");
                     }).addOnFailureListener(e -> {
                         Log.d("FirestoreData", "Error adding sessionID to order", e);
@@ -183,7 +185,7 @@ public class SessionManager {
             });
         }
         else{
-            orderItem.sessionID = this.sessionID;
+            orderItem.setSessionID(this.sessionID);
             updateSessionDetails(orderItem);
         }
     }
@@ -191,12 +193,12 @@ public class SessionManager {
 
     //this function is called after the order is added to the database to update the session details with the new order
     private void updateSessionDetails(OrderItem orderItem) {
-        this.totalBill += orderItem.totalPrice;
+        this.totalBill = this.getTotalBill() + orderItem.getTotalPrice();
         Map<String,Object> data1 = new HashMap<>();
         data1.put("orders", this.orderedItemIDs);
-        data1.put("totalBill", this.totalBill);
+        data1.put("totalBill", this.getTotalBill());
         db.collection("sessions").document(this.sessionID).update(data1).addOnSuccessListener(documentReference -> {
-            addOrderCallback.onAddOrderReceived(this.totalBill,orderItem);
+            addOrderCallback.onAddOrderReceived(this.getTotalBill(),orderItem);
         }).addOnFailureListener(e -> {
             Log.d("FirestoreData", "Error updating document", e);
         });
