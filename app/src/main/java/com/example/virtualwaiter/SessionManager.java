@@ -26,10 +26,13 @@ public class SessionManager {
     private Boolean checkedOut;
     private Boolean paid;
 
-    public FirebaseFirestore db;
+    private FirebaseFirestore db;
 
     public Integer getTotalBill() {
         return totalBill;
+    }
+    public String getSessionID() {
+        return sessionID;
     }
 
     public interface AddOrderCallback {
@@ -116,10 +119,10 @@ public class SessionManager {
         db.collection("sessions").document(sessionID).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
                 this.tableID = documentSnapshot.getLong("tableID").intValue();
-                this.totalBill = documentSnapshot.getLong("totalBill").intValue();
                 this.checkedOut = documentSnapshot.getBoolean("checkedOut");
                 this.paid = documentSnapshot.getBoolean("paid");
                 this.review = null;
+                this.totalBill = documentSnapshot.getLong("totalBill").intValue();
                 this.orderedItemIDs = (ArrayList<String>) documentSnapshot.get("orders");
                 this.orderedItems = new ArrayList<>();
                 for (String orderID : this.orderedItemIDs) {
@@ -139,7 +142,6 @@ public class SessionManager {
                             orderItem.setSessionID(sessionID);
                             this.orderedItems.add(orderItem);
                             this.orderedItemIDs.add(orderID);
-                            this.totalBill = this.getTotalBill() + orderItem.getTotalPrice();
                             addOrderCallback.onAddOrderReceived(this.getTotalBill(),orderItem);
                             Log.d("FirestoreData", "order added to list: " + orderedItems.size());
                         } else {
@@ -207,7 +209,7 @@ public class SessionManager {
     public void addReview(Integer rating, String reviewText){
         Map<String, Object> data = new HashMap<>();
         if(!(reviewText.equals(""))){
-            data.put("review", review);
+            data.put("review", reviewText);
         }
         data.put("rating", rating);
         db.collection("reviews").add(data).addOnSuccessListener(documentReference -> {
