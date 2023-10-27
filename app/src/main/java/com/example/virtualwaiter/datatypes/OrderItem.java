@@ -56,11 +56,11 @@ public class OrderItem {
         this.status = status;
     }
 
-    public String getOrderId() {
+    public String getOrderID() {
         return orderId;
     }
 
-    public void setOrderId(String orderId) {
+    public void setOrderID(String orderId) {
         this.orderId = orderId;
     }
 
@@ -105,8 +105,8 @@ public class OrderItem {
         data.put("notes", this.getNotes());
         data.put("url", this.getImage());
         db.collection("orders").add(data).addOnSuccessListener(documentReference -> {
-            this.setOrderId(documentReference.getId());
-            getCallback().onOrderIdReceived(this.getOrderId());
+            this.setOrderID(documentReference.getId());
+            getCallback().onOrderIdReceived(this.getOrderID());
         }).addOnFailureListener(e -> {
             Log.d("FirestoreData", "Error adding document", e);
         });

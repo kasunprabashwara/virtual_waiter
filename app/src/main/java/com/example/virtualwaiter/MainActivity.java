@@ -28,6 +28,7 @@ import com.example.virtualwaiter.foodtypes.FoodTypeAdapter;
 import com.example.virtualwaiter.recycledview.OfferSliderAdapter;
 import com.example.virtualwaiter.recycledview.OrderListAdapter;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.dialog.MaterialDialogs;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -81,15 +82,16 @@ public class MainActivity extends AppCompatActivity implements FoodMenuAdapter.O
         bookingManager = new BookingManager(tableID);
 
         // this callback is called when a booking is found for the table
-        bookingManager.setBookingCallback(
-                () ->{
-                    Booking booking = bookingManager.getNextBooking();
-                    if(booking == null){
-                        return;
-                    }
-                    waitForBooking(booking);
-                }
-        );
+        bookingManager.setBookingCallback(() ->{
+            if(onGoingSession){
+                return;
+            }
+            Booking booking = bookingManager.getNextBooking();
+            if(booking == null){
+                return;
+            }
+            waitForBooking(booking);
+        });
         //listen to sessions updates
         db.collection("sessions").addSnapshotListener((value, error) -> {
             if (error != null) {
@@ -104,7 +106,6 @@ public class MainActivity extends AppCompatActivity implements FoodMenuAdapter.O
                 if(!onGoingSession && change.getDocument().getLong("tableID").intValue()==tableID && change.getDocument().getBoolean("checkedOut").equals(false)){
                     if(change.getType() == DocumentChange.Type.ADDED){
                         Log.d("FirestoreData", "New session: " + change.getDocument().getData());
-                        sessionManager = new SessionManager(tableID,addOrderCallback,orderedListAdapter);
                         sessionManager.firebaseDownload(change.getDocument().getId());
                         onGoingSession = true;
                     }
@@ -168,55 +169,72 @@ public class MainActivity extends AppCompatActivity implements FoodMenuAdapter.O
                 Toast.makeText(this, "No orders to checkout", Toast.LENGTH_SHORT).show();
                 return;
             }
-            sessionManager.checkOut();
-            //this will create a new session manager for the next session
-            sessionManager = new SessionManager(tableID,addOrderCallback,orderedListAdapter);
-            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(MainActivity.this);
-            View popUpView = getLayoutInflater().inflate(R.layout.pop_up_review, null);
-            RatingBar ratingBar = popUpView.findViewById(R.id.ratingBar);
-            EditText reviewEditText = popUpView.findViewById(R.id.review);
-            Button submitButton = popUpView.findViewById(R.id.editButton);
-
-            builder.setView(popUpView);
-            AlertDialog dialog = builder.create();
-            submitButton.setOnClickListener(v1 -> {
-                String review = reviewEditText.getText().toString();
-                Integer rating = (int) ratingBar.getRating();
-                if(rating == 0){
-                    Toast.makeText(this, "Please give a rating", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                //add these data to firebase session document
-                sessionManager.addReview(rating, review);
+            MaterialAlertDialogBuilder confirmBuilder = new MaterialAlertDialogBuilder(this);
+            confirmBuilder.setTitle("Confirm Checkout");
+            confirmBuilder.setBackground(this.getDrawable(R.drawable.rounded_corners));
+            confirmBuilder.setMessage("Are you sure you want to checkout?");
+            confirmBuilder.setPositiveButton("Yes", (dialog, which) -> {
                 dialog.dismiss();
-
+                orderedItems.clear();
+                orderedListAdapter.notifyDataSetChanged();
+                TextView beforeDiscount = findViewById(R.id.beforeDiscount);
+                TextView afterDiscount = findViewById(R.id.afterDiscount);
+                beforeDiscount.setText("0");
+                afterDiscount.setText("0");
+                showReviewDialog();
             });
-            dialog.show();
-
-            //this timer is to close the add review pop up menu after a certain time of inactivity
-            CountDownTimer reviewTimer = new CountDownTimer(60000, 500) {
-                public void onTick(long millisUntilFinished) {
-                    if(!(dialog.isShowing())){
-                        this.onFinish();
-                        this.cancel();
-                    }
-                }
-                public void onFinish() {
-                    dialog.dismiss();
-                    onGoingSession = false;
-                    orderedItems.clear();
-                    orderedListAdapter.notifyDataSetChanged();
-                    TextView beforeDiscount = findViewById(R.id.beforeDiscount);
-                    TextView afterDiscount = findViewById(R.id.afterDiscount);
-                    beforeDiscount.setText("0");
-                    afterDiscount.setText("0");
-                    waitForBooking(bookingManager.getNextBooking());
-                }
-            }.start();
+            confirmBuilder.setNegativeButton("No", (dialog, which) -> {
+                dialog.dismiss();
+            });
+            confirmBuilder.show();
         });
 
     }
 
+    private void showReviewDialog() {
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(MainActivity.this);
+        View popUpView = getLayoutInflater().inflate(R.layout.pop_up_review, null);
+        RatingBar ratingBar = popUpView.findViewById(R.id.ratingBar);
+        EditText reviewEditText = popUpView.findViewById(R.id.review);
+        Button submitButton = popUpView.findViewById(R.id.editButton);
+        builder.setView(popUpView);
+        AlertDialog dialog = builder.create();
+        submitButton.setOnClickListener(v1 -> {
+            String review = reviewEditText.getText().toString();
+            Integer rating = (int) ratingBar.getRating();
+            if(rating == 0){
+                Toast.makeText(this, "Please give a rating", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            //add these data to firebase session document
+            sessionManager.addReview(rating, review);
+            dialog.dismiss();
+
+        });
+        dialog.show();
+
+        //this timer is to close the add review pop up menu after a certain time of inactivity
+        setUpClosingTimer(dialog);
+    }
+
+    private void setUpClosingTimer(AlertDialog dialog) {
+        CountDownTimer reviewTimer = new CountDownTimer(60000, 500) {
+            public void onTick(long millisUntilFinished) {
+                if(!(dialog.isShowing())){
+                    this.onFinish();
+                    this.cancel();
+                }
+            }
+            public void onFinish() {
+                dialog.dismiss();
+                onGoingSession = false;
+                sessionManager.checkOut();
+                //this will create a new session manager for the next session
+                sessionManager = new SessionManager(tableID,addOrderCallback,orderedListAdapter);
+                waitForBooking(bookingManager.getNextBooking());
+            }
+        }.start();
+    }
 
 
     private void setUpTabLayout() {
@@ -308,15 +326,14 @@ public class MainActivity extends AppCompatActivity implements FoodMenuAdapter.O
             OrderItem orderItem = new OrderItem(foodItem.getName(), foodItem.getPrice(), quantityValue, tableID ,note , foodItem.getImage());
 
             //this callback is used to get the order id from the orderitem class and add it to the session.
-            onGoingSession = true;
             orderItem.setCallback(orderId -> {
-                sessionManager.addOrder(orderItem);
+                onGoingSession = true;
                 TextView beforeDiscount = findViewById(R.id.beforeDiscount);
                 TextView afterDiscount = findViewById(R.id.afterDiscount);
                 beforeDiscount.setText(sessionManager.getTotalBill().toString());
                 afterDiscount.setText(sessionManager.getTotalBill().toString());
             });
-            orderItem.firebaseUpload();
+            sessionManager.addOrder(orderItem);
             dialog.dismiss();
         });
         quantity.setOnEditorActionListener((v, actionId, event) -> {
@@ -326,13 +343,13 @@ public class MainActivity extends AppCompatActivity implements FoodMenuAdapter.O
             return false;
         });
         dialog.show();
-        Log.d("heyyou", "OnFoodItemClick:");
+        dialog.getWindow().setLayout(1200, RecyclerView.LayoutParams.WRAP_CONTENT);
     }
 
     public void setUpBooking(Booking booking){
         Intent intent = new Intent(this, BookedActivity.class);
         intent.putExtra("tableID", booking.getTableID());
-        intent.putExtra("dateTime", booking.getDateTime().toString());
+        intent.putExtra("dateTime", booking.getStartTime().toString());
         intent.putExtra("key", booking.getKey());
         intent.putExtra("name", booking.getName());
         startActivity(intent);
@@ -341,7 +358,10 @@ public class MainActivity extends AppCompatActivity implements FoodMenuAdapter.O
         if(booking == null){
             return;
         }
-        countDownTimer= new CountDownTimer(booking.getDateTime().toDate().getTime() - new Date().getTime(), 1000) {
+        Long timeToBooking = booking.getStartTime().toDate().getTime()-new Date().getTime();
+        Log.d("heyyou", "waitForBooking: "+ booking.getStartTime().toDate().getTime());
+        Log.d("heyyou", "waitForBooking: "+ new Date().getTime());
+        countDownTimer= new CountDownTimer(timeToBooking, 1000) {
             public void onTick(long millisUntilFinished) {
                 Log.d("heyyou", "onTick: "+millisUntilFinished);
                 if(onGoingSession){

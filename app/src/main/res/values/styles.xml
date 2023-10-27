@@ -7,4 +7,8 @@
     <style name="CustomTabText" parent="TextAppearance.Design.Tab">
         <item name="android:textSize">30sp</item> <!-- Adjust the text size as needed -->
     </style>
+    <style name="CustomAlertDialogStyle" parent="MaterialAlertDialog.Material3">
+        <item name="android:layout_width">800dp</item> <!-- Set your desired width here -->
+    </style>
+
 </resources>
