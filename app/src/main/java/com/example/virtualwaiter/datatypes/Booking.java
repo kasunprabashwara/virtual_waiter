@@ -7,14 +7,18 @@ public class Booking {
     private String name;
     private Integer tableID;
     private String key;
-    private Timestamp dateTime;
+    private Timestamp startTime;
+    private Timestamp endTime;
+    private String bookingID;
 
 
-    public Booking(String name, Integer tableID,String key, Timestamp dateTime){
+    public Booking(String name, Integer tableID,String key, Timestamp startTime, Timestamp endTime, String bookingID){
         this.name = name;
         this.tableID = tableID;
         this.key = key;
-        this.dateTime = dateTime;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.bookingID = bookingID;
     }
 
     public String getName() {
@@ -29,7 +33,9 @@ public class Booking {
         return key;
     }
 
-    public Timestamp getDateTime() {
-        return dateTime;
+    public Timestamp getStartTime() {
+        return startTime;
     }
+    public Timestamp getEndTime() { return endTime; }
+    public String getBookingID() { return bookingID; }
 }

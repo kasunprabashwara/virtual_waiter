@@ -5,6 +5,7 @@ import android.util.Log;
 import com.example.virtualwaiter.datatypes.Booking;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
@@ -23,49 +24,47 @@ public class BookingManager {
     public BookingManager(Integer tableID){
         this.tableID = tableID;
         this.bookings = new ArrayList<>();
-        db.collection("tableBookings").whereEqualTo("tableID", tableID).get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                for (QueryDocumentSnapshot document : task.getResult()) {;
-                    Booking booking = new Booking(document.getString("name"), document.getLong("tableID").intValue(), document.getString("key"),document.getTimestamp("dateTime"));
-                    Log.d("FirestoreData",  " booking " + document.getData());
-                    bookings.add(booking);
-                    long now=new Date().getTime();
-                    bookings.removeIf(item -> item.getDateTime().toDate().getTime() - now < 0);
-                    bookings.sort(Comparator.comparing(o -> o.getDateTime()));
-                    callback.onBookingReceived();
-                }
-            } else {
-                Log.d("FirestoreData", "Error getting bookings: ", task.getException());
-            }
-        });
-        db.collection("tableBookings").addSnapshotListener(((value, error) -> {
+        // Define the time constraint
+        Date now = new Date(); // Current date and time
+        Query query = db.collection("tableBookings")
+                .whereEqualTo("tableID", tableID)
+                .whereGreaterThanOrEqualTo("start", now);
+        query.addSnapshotListener((value, error) -> {
             if (error != null) {
                 Log.w("FirestoreData", "tableBookings listen failed.", error);
                 return;
             }
             for (DocumentChange change : value.getDocumentChanges()) {
-                if(change.getDocument().getLong("tableID").intValue() != tableID){
-                    continue;
-                }
                 switch (change.getType()) {
                     case ADDED:
-                        Booking booking = new Booking(change.getDocument().getString("name"), change.getDocument().getLong("tableID").intValue(), change.getDocument().getString("key"),change.getDocument().getTimestamp("dateTime"));
-                        Log.d("FirestoreData",  " booking " + change.getDocument().getData());
+                        // Handle added documents here
+                        Log.d("FirestoreData", "Booking " + change.getDocument().getData());
+                        Booking booking = new Booking(
+                                change.getDocument().getString("name"),
+                                change.getDocument().getLong("tableID").intValue(),
+                                change.getDocument().getString("key"),
+                                change.getDocument().getTimestamp("start"),
+                                change.getDocument().getTimestamp("end"),
+                                change.getDocument().getId()
+                        );
                         bookings.add(booking);
-                        long now=new Date().getTime();
-                        bookings.removeIf(item -> item.getDateTime().toDate().getTime() - now < 0);
-                        bookings.sort(Comparator.comparing(o -> o.getDateTime()));
-                        Log.d("FirestoreData", "bookings size: "+bookings.size());
+                        bookings.sort(Comparator.comparing(Booking::getStartTime));
+                        callback.onBookingReceived();
                         break;
+
                     case MODIFIED:
+                        // Handle modified documents here
                         Log.d("FirestoreData", "Modified booking: ");
                         break;
+
                     case REMOVED:
+                        // Handle removed documents here
                         Log.d("FirestoreData", "Removed booking: ");
                         break;
                 }
             }
-        }));
+        });
+
     }
     public Booking getNextBooking(){
         if(bookings.size() == 0){
